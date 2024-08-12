@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Book{% endblock %}
+
+{% block content %}
+<div class="card mx-auto" style="width: 21rem;">
+    <div class="card-body">
+        <h5 class="card-title text-center">New Book Entry</h5>
+        <form method="post">
+            <div class="mb-3">
+                <label for="isbnField" class="form-label"></label>
+                <input name="book_isbn" type="text" class="form-control" id="isbnField" placeholder="ISBN Number (required)" required>
+                <div class="invalid-feedback">This field is required. Input "N/A" if data is not yet available.</div>
+            </div>
+            <div class="mb-3">
+                <input name="book_title" type="text" class="form-control" placeholder="Book Title (required)" required>
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <input name="book_author" type="text" class="form-control" placeholder="Book Author (required)" required>
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <select name="book_category" class="form-select" aria-label="Default select example" required>
+                    <option selected>Book Category</option>
+                    <option value="Uncategorized">Uncategorized</option>
+                  </select>
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <textarea name="book_desc" class="form-control" rows="5" placeholder="Book Description (optional)"></textarea>
+            </div>
+            <hr>
+            <div class="mb-3 text-center"><input type="submit" class="btn btn-secondary" value="Add to database"></div>
+        </form>
+    </div>
+</div>
+{% endblock %}

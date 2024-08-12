@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Book Details{% endblock %}
+
+{% block content %}
+<div class="card mx-auto" style="width: 21rem;">
+    <div class="card-body">
+        <h5 class="card-title text-center">Update Book Details</h5>
+        <form method="post">
+            <div class="mb-3">
+                <label for="isbnField" class="form-label">ISBN</label>
+                <textarea name="book_isbn" class="form-control" rows="1" id="isbnField" placeholder="">{{ book['isbn'] }}</textarea>
+                <div class="invalid-feedback">This field is required. Input "N/A" if data is not yet available.</div>
+            </div>
+            <div class="mb-3">
+                <label for="bookTitle" class="form-label">Title</label>
+                <textarea name="book_title" class="form-control" rows="1" id="bookTitle" placeholder="">{{ book['title'] }}</textarea>
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <label for="bookAuthor" class="form-label">Author</label>
+                <textarea name="book_author" class="form-control" rows="1" id="bookAuthor" placeholder="">{{ book['author'] }}</textarea>
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <label for="bookCat" class="form-label">Category</label>
+                <select name="book_category" class="form-select" id="bookCat" aria-label="{{ book['category'] }}" required>
+                    <option selected>{{ book['category'] }}</option>
+                    <option value="1">Uncategorized</option>
+                  </select>
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <label for="bookDesc" class="form-label">Description (optional)</label>
+                <textarea name="book_desc" class="form-control" rows="5" id="bookDesc" placeholder="">{{ book['book_desc'] }}</textarea>
+            </div>
+            <hr>
+            <div class="mb-3 text-center"><input type="submit" class="btn btn-danger" value="Update"></div>
+        </form>
+    </div>
+</div>
+{% endblock %}
