@@ -38,6 +38,9 @@
                             <li><a class="dropdown-item" href="#">Return book</a></li>
                             <li><a class="dropdown-item" href="#">Comment book</a></li>
                             {% if g.user['library_staff'] %}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item" href="{{ url_for('book_log.add_book') }}">Add book</a></li>
                             <li><a class="dropdown-item" href="#">Check Returned Books</a></li>
                             <li><a class="dropdown-item" href="#">Edit/Update Book Details</a></li>
@@ -57,7 +60,7 @@
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Book List</a>
+                        <a class="nav-link" href="{{ url_for('book_log.list_books') }}">Book List</a>
                     </li>
                 </ul>
                 <form class="d-flex" role="search">

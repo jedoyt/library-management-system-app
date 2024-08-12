@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Log Entry{% endblock %}
+
+{% block content %}
+<div class="card mx-auto" style="width: 21rem;">
+    <div class="card-body">
+        <h5 class="card-title text-center">Book Log Entry</h5>
+        <h6 class="card-subtitle">{{ book_info['title'] }}, {{ book_info['author']}}</h6>
+        <p class="card-text">Category: {{ book_info['category'] }}</p>
+        <form method="post">
+            <div class="mb-3">
+                <label for="bookStatus" class="form-label">Status Update</label>
+                <select name="book_status" class="form-select" id="bookStatus" required>
+                    <option selected>Choose Status</option>
+                    <option value="Available">Available</option>
+                    <option value="Borrowed">Borrowed</option>
+                    <option value="Returned">Returned</option>
+                    <option value="Damaged">Damaged</option>
+                    <option value="Lost">Lost</option>
+                  </select>
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <label for="bookRemarks" class="form-label">Remarks (optional)</label>
+                <textarea name="book_remarks" class="form-control" rows="5" id="bookRemarks" placeholder="Enter remarks/comments (optional)"></textarea>
+            </div>
+            <hr>
+            <div class="mb-3 text-center"><input type="submit" class="btn btn-info" value="Update"></div>
+        </form>
+    </div>
+</div>
+{% endblock %}

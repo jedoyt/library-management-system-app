@@ -14,13 +14,14 @@
 {% for log in book_logs %}
 <div class="card mx-auto" style="width: 21rem;">
     <div class="card-body">
+        <p class="card-text">{{ log['title'] }} ({{ log['author'] }}) </p>
         <h6 class="card-subtitle text-center"><span class="badge text-bg-secondary">{{ log['book_status'] }}</span> |
             <span class="badge text-bg-light">{{ log['datetime_log'] }}</span></h6>
-        <p class="card-text">Book: {{ log['title'] }} ({{ log['author'] }}) </p>
-        <p class="card-text">User: {{ log['full_name'] }}</p>
+        <p class="card-text">updated by: {{ log['full_name'] }}</p>
         <p class="card-text">Remarks/Comments:<br><small>{{ log['remarks'] }}</small></p>
         {% if g.user['library_staff'] %}
-        <a href="{{ url_for('book_log.edit_log', id=log['id']) }}">Edit</a>
+        <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=log['book_id']) }}">Edit log</a>
+        <a class="btn btn-danger" href="{{ url_for('book_log.edit_book_details', book_id=log['book_id']) }}">Edit Book Details</a>
         {% endif %}
     </div>
 </div>

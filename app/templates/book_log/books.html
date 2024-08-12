@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Books{% endblock %}
+
+{% block content %}
+<div class="card mx-auto" style="width: 21rem;">
+    <div class="card-body">
+        <h5 class="card-title text-center">Books</h5>
+    </div>
+</div>
+<br>
+{% for book in all_books %}
+<div class="card mx-auto" style="width: 21rem;">
+    <div class="card-body">
+        <h6 class="card-subtitle">{{ book['title'] }}, {{ book['author'] }}</h6>
+        <p class="card-text">Category: {{ book['category'] }}</p>
+        <a class="btn btn-secondary" href="#">View Details</a>
+        {% if g.user['library_staff'] %}
+        <a class="btn btn-danger" href="{{ url_for('book_log.edit_book_details', book_id=book['id']) }}">Edit</a>
+        <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=book['id']) }}">Enter Log</a>
+        {% endif %}
+    </div>
+</div>
+<br>
+{% endfor %}
+{% endblock %}
