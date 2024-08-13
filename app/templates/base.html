@@ -44,7 +44,8 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{{ url_for('auth.user_page', user_id=g.user['id']) }}">Profile</a></li>
+                            <li><a class="dropdown-item"
+                                    href="{{ url_for('auth.user_page', user_id=g.user['id']) }}">Profile</a></li>
                         </ul>
                     </li>
                     {% else %}
@@ -63,12 +64,16 @@
             </div>
         </div>
     </nav>
-    <div class="container-fluid"><hr></div>
+    <div class="container-fluid">
+        <hr>
+    </div>
     <div class="container-fluid">
         {% block content %}
         {% endblock %}
     </div>
-    <div class="container-fluid"><hr></div>
+    <div class="container-fluid">
+        <hr>
+    </div>
 </body>
 
 </html>
