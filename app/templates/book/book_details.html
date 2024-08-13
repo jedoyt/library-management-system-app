@@ -28,6 +28,7 @@
             <a class="btn btn-dark" href="{{ url_for('book_log.return_book', book_id=book['id']) }}">Return</a>
             {% endif %}
         {% endif %}
+        <hr>
         {% if g.user['library_staff'] %}
         <a class="btn btn-danger" href="{{ url_for('book.edit_book_details', book_id=book['id']) }}">Edit book details</a>
         <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=book['id']) }}">Enter new log</a>
