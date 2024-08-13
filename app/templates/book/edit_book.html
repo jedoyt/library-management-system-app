@@ -41,10 +41,8 @@
             </div>
             <hr>
             {% if g.user['library_staff'] %}
-            <button type="submit" class="btn btn-secondary" value="Update" data-bs-toggle="modal"
-                data-bs-target="#updateModal">Update</button>
-            <a class="btn btn-danger" href="{{ url_for('book.delete_book', book_id=book['id']) }}"
-                data-bs-toggle="modal" data-bs-target="#updateModal">Delete</a>
+            <button type="submit" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#updateModal">Update</button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#updateModal">Delete</button>
             <!--UPDATE MODAL-->
             <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
@@ -59,7 +57,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-danger">Confirm</button>
+                            <!--<button type="button" class="btn btn-danger">Confirm</button>-->
+                            <a class="btn btn-danger" href="{{ url_for('book.delete_book', book_id=book['id']) }}">Confirm</a>
                         </div>
                     </div>
                 </div>

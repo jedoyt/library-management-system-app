@@ -101,7 +101,7 @@ def edit_book_details(book_id):
                 (book_dict['ISBN'], book_dict['Title'], book_dict['Author'], book_dict['Category'], book_desc, book_id)
             )
             db.commit()
-            return redirect(url_for('book.list_books'))
+            return redirect(url_for('book.view_book_details', book_id=book_id))
 
     return render_template('book/edit_book.html', book=book)
 
@@ -113,7 +113,7 @@ def list_books():
 
     return render_template('book/books.html', all_books=all_books)
 
-@bp.route('/delete/<int:book_id>', methods=('POST',))
+@bp.route('/delete/<int:book_id>', methods=('GET', 'POST'))
 @login_required
 def delete_book(book_id):
     get_book_details(book_id=book_id)
