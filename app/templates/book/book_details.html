@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Details{% endblock %}
+
+{% block content %}
+<div class="card mx-auto" style="width: 24rem;">
+    <div class="card-body">
+        <h5 class="card-title text-center">Book Details</h5>
+    </div>
+</div>
+<br>
+<div class="card mx-auto" style="width: 24rem;">
+    <div class="card-body">
+        <h6 class="card-subtitle">
+            <span class="badge text-bg-{{badge[latest_log['book_status']]}}">{{ latest_log['book_status'] }}</span> |
+            <span class="badge text-bg-light">{{ latest_log['datetime_log'] }}</span>
+        </h6>
+        <br>
+        <h6 class="card-subtitle">{{ book['title'] }}</h6>
+        <small class="card-text">Author: {{ book['author'] }}</small>
+        <p><small class="card-text">ISBN: {{ book['isbn'] }}</small></p>
+        <small class="card-text">Category: {{ book['category'] }}</small>
+        <p class="card-text"><small>Description:<br>{{ book['book_desc'] }}</small></p>
+        {% if latest_log['book_status'] == "Available" %}
+        <a class="btn btn-secondary" href="{{ url_for('book_log.borrow_book', book_id=book['id']) }}">Borrow</a>
+        {% elif latest_log['book_status'] == "Borrowed" %}
+            {% if latest_log['user_id'] == g.user['id'] %}
+            <a class="btn btn-dark" href="{{ url_for('book_log.return_book', book_id=book['id']) }}">Return</a>
+            {% endif %}
+        {% endif %}
+        {% if g.user['library_staff'] %}
+        <a class="btn btn-danger" href="{{ url_for('book.edit_book_details', book_id=book['id']) }}">Edit book details</a>
+        <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=book['id']) }}">Enter new log</a>
+        {% endif %}
+    </div>
+</div>
+<br>
+<div class="container-fluid"><hr></div>
+<div class="card mx-auto">
+    <div class="card-body">
+        <h5 class="card-title text-center">Recent Logs</h5>
+    </div>
+</div>
+<br>
+{% for log in book_logs %}
+<div class="card mx-auto">
+    <div class="card-body">
+        <p class="card-text">{{ log['title'] }} ({{ log['author'] }}) </p>
+        <h6 class="card-subtitle">
+            <span class="badge text-bg-{{badge[log['book_status']]}}">{{ log['book_status'] }}</span> |
+            <span class="badge text-bg-light">{{ log['datetime_log'] }}</span></h6>
+        <p class="card-text">user: {{ log['full_name'] }}</p>
+        <p class="card-text">Remarks/Comments:<br><small>{{ log['remarks'] }}</small></p>
+        {% if g.user['library_staff'] %}
+        <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=log['book_id']) }}">Edit this log</a>
+        {% endif %}
+    </div>
+</div>
+<div class="container-fluid">
+    <hr>
+</div>
+{% endfor %}
+{% endblock %}

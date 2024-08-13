@@ -1,5 +1,6 @@
 import functools
 
+
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -120,6 +121,40 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute('SELECT * FROM user WHERE id = ?', (user_id,)).fetchone()
+
+@bp.route('/user/<int:user_id>', methods=('GET', 'POST'))
+def user_page(user_id):
+    error = ""
+    if request.method == 'POST':
+        db = get_db()
+        registered_emails = db.execute('SELECT email FROM user').fetchall()
+        registered_names = db.execute('SELECT full_name from user').fetchall()
+        email = request.form['email']
+        full_name = request.form['full_name']
+        contact_number = request.form['contact_number']
+
+        # Check for changes in email and full name
+        if email != g.user['email']:
+            if email in registered_emails:
+                error += " That email is already registered!"
+        if full_name != g.user['full_name']:
+            if full_name in registered_names:
+                error += " That name is already taken!"
+
+        if error == "":
+            try:
+                db.execute(
+                    'UPDATE user SET email = ?, full_name = ?, contact_number = ? WHERE user.id = ?',
+                    (email, full_name, contact_number, user_id)
+                )
+                db.commit()
+            except db.IntegrityError:
+                flash(error)
+                return render_template('auth/user_page.html', error=error)
+            else:
+                return redirect(url_for('auth.user_page', user_id=session['user_id']))
+
+    return render_template('auth/user_page.html', error=error)
 
 @bp.route('/logout')
 def logout():

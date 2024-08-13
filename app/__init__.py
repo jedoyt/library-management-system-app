@@ -41,4 +41,7 @@ def create_app(test_config=None):
     from . import book_log
     app.register_blueprint(book_log.bp)
 
+    from . import book
+    app.register_blueprint(book.bp)
+
     return app

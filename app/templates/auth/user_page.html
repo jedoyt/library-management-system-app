@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<div class="card mx-auto" style="width: 21rem;">
+    <div class="card-body">
+        <h5 class="card-title text-center">User Profile</h5>
+        {% if error == "" %}
+        <br>
+        {% else %}
+        <div class="invalid-feedback">{{ error }}</div>
+        {% endif %}
+        <form method="post">
+            <div class="mb-3">
+                <label for="InputEmail" class="form-label">Email</label>
+                <textarea name="email" type="email" class="form-control" rows="1" id="InputEmail"
+                    required>{{ g.user['email'] }}</textarea>
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <label for="InputFullname" class="form-label">Full Name</label>
+                <textarea name="full_name" class="form-control" rows="1" id="InputFullname"
+                    required>{{ g.user['full_name'] }}</textarea>
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <label for="InputContact" class="form-label">Contact Number (optional)</label>
+                <textarea name="contact_number" type="text" class="form-control" rows="1"
+                    id="InputContact">{{ g.user['contact_number'] }}</textarea>
+            </div>
+            <hr>
+            <div class="text-center"><input type="submit" class="btn btn-secondary" value="Update"></div>
+        </form>
+    </div>
+</div>
+{% endblock %}

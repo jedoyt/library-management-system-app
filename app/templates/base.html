@@ -24,31 +24,27 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     {% if g.user %}
-                    <li class="nav-item">{{ g.user['full_name'] }}</li>
+                    <li class="nav-item">{{ g.user['email'].split('@')[0] }}</li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{ url_for('auth.logout') }}">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('book.list_books') }}">Book List</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            Dropdown
+                            Menu
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Borrow book</a></li>
-                            <li><a class="dropdown-item" href="#">Return book</a></li>
-                            <li><a class="dropdown-item" href="#">Comment book</a></li>
+                            <li><a class="dropdown-item" href="#">Browse Books</a></li>
                             {% if g.user['library_staff'] %}
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{{ url_for('book_log.add_book') }}">Add book</a></li>
-                            <li><a class="dropdown-item" href="#">Check Returned Books</a></li>
-                            <li><a class="dropdown-item" href="#">Edit/Update Book Details</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('book.add_book') }}">Add book</a></li>
                             {% endif %}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.user_page', user_id=g.user['id']) }}">Profile</a></li>
                         </ul>
                     </li>
                     {% else %}
@@ -59,14 +55,11 @@
                         <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
                     </li>
                     {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('book_log.list_books') }}">Book List</a>
-                    </li>
                 </ul>
-                <form class="d-flex" role="search">
+                <!--<form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                </form>-->
             </div>
         </div>
     </nav>
