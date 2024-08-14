@@ -3,23 +3,48 @@
 {% block title %}Books{% endblock %}
 
 {% block content %}
-<div class="card mx-auto" style="width: 21rem;">
+<div class="card mx-auto" style="width: 24rem;">
     <div class="card-body">
         <h5 class="card-title text-center">Books</h5>
     </div>
 </div>
 <br>
 {% for book in all_books %}
-<div class="card mx-auto" style="width: 21rem;">
+<div class="card mx-auto" style="width: 24rem;">
+    <h6 class="card-header">
+        <span class="badge text-bg-{{badge[book['book_status']]}}">{{ book['book_status'] }}</span> |
+        <span class="badge text-bg-light">{{ book['MAX(datetime_log)'] }}</span><br>
+        <span class="badge text-bg-light">user: {{ book['full_name'] }}</span>
+    </h6>
     <div class="card-body">
         <h6 class="card-subtitle">{{ book['title'] }}, {{ book['author'] }}</h6>
         <p class="card-text">Category: {{ book['category'] }}</p>
-        <a class="btn btn-secondary" href="{{ url_for('book.view_book_details', book_id=book['id']) }}">View Details</a>
+        <a class="btn btn-secondary" href="{{ url_for('book.view_book_details', book_id=book['book_id']) }}">View
+            Details</a>
         {% if g.user['library_staff'] %}
-        <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=book['id']) }}">Enter new Log</a>
+        <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=book['book_id']) }}">Enter new Log</a>
         {% endif %}
     </div>
 </div>
 <br>
 {% endfor %}
+<div class="card mx-auto" style="width: 24rem;">
+    <div class="card-body">
+        <p class="card-text text-center">
+            <ul class="pagination">
+                <li class="page-item">
+                    {% if page > 1 %}
+                    <a class="page-link" href="{{ url_for('book.browse_books', page=page-1) }}">Previous</a>
+                    {% endif %}
+                </li>
+                <li class="page-item"> <span class="page-link disabled">page {{page}} of {{total_pages}}</span> </li>
+                <li class="page-item">
+                    {% if page < total_pages %} <a class="page-link" href="{{ url_for('book.browse_books', page=page+1) }}">
+                        Next</a>
+                        {% endif %}
+                </li>
+            </ul>
+        </p>
+    </div>
+</div>
 {% endblock %}

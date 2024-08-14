@@ -24,7 +24,17 @@ def index():
         " FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id"
         " ORDER BY datetime_log DESC"
     ).fetchall()
-    return render_template('book_log/index.html', book_logs=book_logs, badge=badge)
+    # Pagination objects
+    page = request.args.get('page', 1, type=int)
+    per_page = 5
+    start = (page - 1) * per_page
+    end = start + per_page
+    total_pages = (len(book_logs) + per_page - 1) // per_page
+
+    return render_template(
+        'book_log/index.html', book_logs=book_logs[start:end], 
+        badge=badge, total_pages=total_pages, page=page
+        )
 
 def get_book_details(book_id):
     book = get_db().execute(

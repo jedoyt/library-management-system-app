@@ -28,7 +28,7 @@
                         <a class="nav-link active" aria-current="page" href="{{ url_for('auth.logout') }}">Logout</a>
                     </li>
                     <!--<li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('book.list_books') }}">Book List</a>
+                        <a class="nav-link" href="{{ url_for('book.browse_books') }}">Book List</a>
                     </li>-->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -36,7 +36,7 @@
                             Menu
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('book.list_books') }}">Browse Books</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('book.browse_books') }}">Browse Books</a></li>
                             {% if g.user['library_staff'] %}
                             <li><a class="dropdown-item" href="{{ url_for('book.add_book') }}">Add book</a></li>
                             {% endif %}

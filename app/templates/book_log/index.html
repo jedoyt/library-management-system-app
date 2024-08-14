@@ -5,21 +5,21 @@
 {% block content %}
 <div class="card mx-auto">
     <div class="card-body">
-        <h5 class="card-title text-center">Log Feed</h5>
+        <h5 class="card-title text-center">Books Log Feed</h5>
     </div>
 </div>
-<div class="container-fluid">
-    <hr>
-</div>
+<br>
 {% for log in book_logs %}
 <div class="card mx-auto">
+    <div class="card-header">
+        <h6 class="card-subtitle">
+            <span class="badge text-bg-{{badge[log['book_status']]}}">{{ log['book_status'] }}</span>
+            <span class="badge text-bg-light">{{ log['datetime_log'] }}</span>
+            <span class="badge text-bg-light">user: {{ log['full_name'] }}</span>
+        </h6>
+    </div>
     <div class="card-body">
         <p class="card-text">{{ log['title'] }} ({{ log['author'] }}) </p>
-        <h6 class="card-subtitle"><span class="badge text-bg-{{badge[log['book_status']]}}">{{ log['book_status']
-                }}</span> |
-            <span class="badge text-bg-light">{{ log['datetime_log'] }}</span>
-        </h6>
-        <p class="card-text">user: {{ log['full_name'] }}</p>
         <p class="card-text">Remarks/Comments:<br><small>{{ log['remarks'] }}</small></p>
         <a class="btn btn-secondary" href="{{ url_for('book.view_book_details', book_id=log['book_id']) }}">View Book
             Details</a>
@@ -28,8 +28,19 @@
         {% endif %}
     </div>
 </div>
-<div class="container-fluid">
-    <hr>
-</div>
+<br>
 {% endfor %}
+<ul class="pagination">
+    <li class="page-item">
+        {% if page > 1 %}
+        <a class="page-link" href="{{ url_for('book_log.index', page=page-1) }}">Previous</a>
+        {% endif %}
+    </li>
+    <li class="page-item"> <span class="page-link disabled">page {{page}} of {{total_pages}}</span> </li>
+    <li class="page-item">
+        {% if page < total_pages %}
+        <a class="page-link" href="{{ url_for('book_log.index', page=page+1) }}">Next</a>
+        {% endif %}
+    </li>
+</ul>
 {% endblock %}

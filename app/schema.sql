@@ -14,10 +14,14 @@ CREATE TABLE user (
 
 CREATE TABLE book (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    isbn TEXT NOT NULL,
+    ean_isbn13 TEXT,
+    upc_isbn10 TEXT,
     title TEXT NOT NULL,
-    author TEXT NOT NULL,
+    author TEXT,
     category TEXT NOT NULL,
+    publisher TEXT,
+    date_added DATE,
+    date_added DATE,
     book_desc TEXT
 );
 

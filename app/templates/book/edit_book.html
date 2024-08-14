@@ -30,7 +30,9 @@
                 <select name="book_category" class="form-select" id="bookCat" aria-label="{{ book['category'] }}"
                     required>
                     <option selected>{{ book['category'] }}</option>
-                    <option value="1">Uncategorized</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
                 </select>
                 <div class="invalid-feedback">This field is required.</div>
             </div>

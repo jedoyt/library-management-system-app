@@ -22,8 +22,10 @@
             </div>
             <div class="mb-3">
                 <select name="book_category" class="form-select" aria-label="Default select example" required>
-                    <option selected>Book Category</option>
-                    <option value="Uncategorized">Uncategorized</option>
+                    <option selected>Select Category</option>
+                    {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
                   </select>
                 <div class="invalid-feedback">This field is required.</div>
             </div>
