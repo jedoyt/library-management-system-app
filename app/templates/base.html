@@ -39,6 +39,7 @@
                             <li><a class="dropdown-item" href="{{ url_for('book.browse_books') }}">Browse Books</a></li>
                             {% if g.user['library_staff'] %}
                             <li><a class="dropdown-item" href="{{ url_for('book.add_book') }}">Add book</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('book.new_books') }}">New Books</a></li>
                             {% endif %}
                             <li>
                                 <hr class="dropdown-divider">

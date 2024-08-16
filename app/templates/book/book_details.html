@@ -19,20 +19,24 @@
     <div class="card-body">
         <h6 class="card-subtitle">{{ book['title'] }}</h6>
         <small class="card-text">Author: {{ book['author'] }}</small>
-        <p><small class="card-text">ISBN: {{ book['isbn'] }}</small></p>
-        <small class="card-text">Category: {{ book['category'] }}</small>
+        <p><small class="card-text">Category: {{ book['category'] }}</small></p>
         <p class="card-text"><small>Description:<br>{{ book['book_desc'] }}</small></p>
+        <p><small class="card-text">Database ID#: {{ book['id'] }}</small></p>
+        <p><small class="card-text">EAN ISBN13: {{ book['ean_isbn13'] }}</small></p>
+        <p><small class="card-text">UPC ISBN10: {{ book['upc_isbn10'] }}</small></p>
+        <p><small class="card-text">Publisher: {{ book['publisher'] }}</small></p>
+        <p><small class="card-text">Date published: {{ book['date_published'] }}</small></p>
+        <p><small class="card-text">Date added: {{ book['date_added'] }}</small></p>
         {% if latest_log['book_status'] == "Available" %}
         <a class="btn btn-secondary" href="{{ url_for('book_log.borrow_book', book_id=book['id']) }}">Borrow</a>
         {% elif latest_log['book_status'] == "Borrowed" %}
-        {% if latest_log['user_id'] == g.user['id'] %}
-        <a class="btn btn-dark" href="{{ url_for('book_log.return_book', book_id=book['id']) }}">Return</a>
-        {% endif %}
+            {% if latest_log['user_id'] == session['user_id'] %}
+            <a class="btn btn-dark" href="{{ url_for('book_log.return_book', book_id=book['id']) }}">Return</a>
+            {% endif %}
         {% endif %}
         <hr>
         {% if g.user['library_staff'] %}
-        <a class="btn btn-danger" href="{{ url_for('book.edit_book_details', book_id=book['id']) }}">Edit book
-            details</a>
+        <a class="btn btn-danger" href="{{ url_for('book.edit_book_details', book_id=book['id']) }}">Edit book details</a>
         <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=book['id']) }}">Enter new log</a>
         {% endif %}
     </div>

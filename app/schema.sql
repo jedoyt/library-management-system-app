@@ -14,15 +14,16 @@ CREATE TABLE user (
 
 CREATE TABLE book (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    ean_isbn13 TEXT,
-    upc_isbn10 TEXT,
     title TEXT NOT NULL,
     author TEXT,
     category TEXT NOT NULL,
+    ean_isbn13 TEXT,
+    upc_isbn10 TEXT,
+    book_desc TEXT,
     publisher TEXT,
+    date_published DATE,
     date_added DATE,
-    date_added DATE,
-    book_desc TEXT
+    pages INTEGER
 );
 
 CREATE TABLE book_log (

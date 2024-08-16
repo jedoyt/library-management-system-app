@@ -5,18 +5,13 @@ from werkzeug.exceptions import abort
 
 from app.auth import login_required
 from app.db import get_db
+from app.objects import badge
+
 
 bp = Blueprint('book_log', __name__)
 
 @bp.route('/')
 def index():
-    badge = {
-        'Available': 'success',
-        'Borrowed': 'warning',
-        'Returned': 'info',
-        'Damaged': 'secondary',
-        'Lost': 'dark',
-    }
     db = get_db()
     
     book_logs = db.execute(
