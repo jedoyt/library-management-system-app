@@ -5,7 +5,7 @@ from werkzeug.exceptions import abort
 
 from app.auth import login_required
 from app.db import get_db
-from app.objects import categories, badge #required_dict, nullables_dict
+from app.objects import categories, badge
 
 bp = Blueprint('book', __name__)
 

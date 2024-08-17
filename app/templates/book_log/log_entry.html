@@ -12,12 +12,10 @@
             <div class="mb-3">
                 <label for="bookStatus" class="form-label">Status Update</label>
                 <select name="book_status" class="form-select" id="bookStatus" required>
-                    <option selected>Choose Status</option>
-                    <option value="Available">Available</option>
-                    <option value="Borrowed">Borrowed</option>
-                    <option value="Returned">Returned</option>
-                    <option value="Damaged">Damaged</option>
-                    <option value="Lost">Lost</option>
+                    <option selected>Select Status</option>
+                    {% for status in book_status_list %}
+                    <option value="{{ status }}">{{ status }}</option>
+                    {% endfor %}
                   </select>
                 <div class="invalid-feedback">This field is required.</div>
             </div>
