@@ -5,7 +5,7 @@ from werkzeug.exceptions import abort
 
 from app.auth import login_required
 from app.db import get_db
-from app.objects import badge
+from app.objects import badge, book_status_list
 
 
 bp = Blueprint('book_log', __name__)
@@ -95,4 +95,4 @@ def enter_log(book_id):
             db.commit()
             return redirect(url_for('book_log.index'))
 
-    return render_template('book_log/log_entry.html', book_info=book_info)
+    return render_template('book_log/log_entry.html', book_info=book_info, book_status_list=book_status_list)
