@@ -34,4 +34,48 @@
         </form>
     </div>
 </div>
+<br>
+<div class="card mx-auto">
+    <div class="card-body">
+        <h5 class="card-title text-center">User Logs</h5>
+    </div>
+</div>
+<br>
+{% for log in user_logs %}
+<div class="card mx-auto">
+    <div class="card-header">
+        <h6 class="card-subtitle">
+            <span class="badge text-bg-{{badge[log['book_status']]}}">{{ log['book_status'] }}</span> 
+            <span class="badge text-bg-light">{{ log['datetime_log'] }}</span>
+        </h6>
+    </div>
+    <div class="card-body">
+        <p class="card-text">{{ log['title'] }} ({{ log['author'] }}) </p>
+        <p class="card-text">user: {{ log['full_name'] }}</p>
+        <p class="card-text">Remarks/Comments:<br><small>{{ log['remarks'] }}</small></p>
+        {% if g.user['library_staff'] %}
+        <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=log['book_id']) }}">Edit this log</a>
+        {% endif %}
+    </div>
+</div>
+<div class="container-fluid">
+    <hr>
+</div>
+{% endfor %}
+<br>
+<div class="container-fluid mx-auto" style="width: 36rem;">
+    <ul class="pagination">
+        <li class="page-item">
+            {% if page > 1 %}
+            <a class="page-link" href="{{ url_for('book.browse_books', page=page-1) }}">Previous</a>
+            {% endif %}
+        </li>
+        <li class="page-item"> <span class="page-link disabled">page {{page}} of {{total_pages}}</span> </li>
+        <li class="page-item">
+            {% if page < total_pages %} <a class="page-link" href="{{ url_for('book.browse_books', page=page+1) }}">
+                Next</a>
+                {% endif %}
+        </li>
+    </ul>
+</div>
 {% endblock %}

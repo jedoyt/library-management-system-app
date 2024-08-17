@@ -59,42 +59,35 @@ def add_book():
             return redirect(url_for('book.new_books'))
     return render_template('book/add_book.html', categories=categories)
 
-@bp.route('/new_books', methods=('GET',))
+@bp.route('/new_books', methods=('GET', 'POST'))
 @login_required
 def new_books():
-    book_ids_queried = get_db().execute('SELECT id FROM book;')
-    book_ids = book_ids_queried.fetchall()
+    search_results = list()
+    search_results_header = f"Search Results"
 
-    logged_book_ids_queried = get_db().execute(
-        'SELECT book_id FROM book_log'
-        ' GROUP BY book_id ORDER BY MAX(datetime_log) DESC;'
-    )
-    logged_book_ids = logged_book_ids_queried.fetchall()
+    if request.method == 'POST':
+        title = request.form['book_title']
+        author = request.form['book_author']
+        category = request.form['book_category']
 
-    unlogged_book_ids = list()
+        search_results = get_db().execute(
+            'SELECT * FROM book WHERE book.id NOT IN (SELECT book_id FROM book_log)'
+            ' AND title LIKE "%" || ? || "%"'
+            ' AND author LIKE "%" || ? || "%"'
+            ' AND category LIKE "%" || ? || "%"', (title, author, category)
+        ).fetchall()
+        print([(book['title'], book['author'], book['category']) for book in search_results])
 
-    for book in book_ids:
-        try:
-            if book['id'] not in [book_log['book_id'] for book_log in logged_book_ids]:
-                unlogged_book_ids.append(book['id'])
-            else:
-                continue
-        except Exception as e:
-            print("No logs present on book_log table")
-            unlogged_book_ids.append(book['id'])
-        
-    unlogged_books = [get_book_details(id) for id in unlogged_book_ids]
+        search_results_header = f"Search Results for Title:'{title}' Author:'{author}' Category:'{category}'"
 
-    # Pagination objects
-    page = request.args.get('page', 1, type=int)
-    per_page = 5
-    start = (page - 1) * per_page
-    end = start + per_page
-    total_pages = (len(unlogged_books) + per_page - 1) // per_page
+        return render_template(
+            'book/new_books.html', search_results=search_results,
+            search_results_header=search_results_header, categories=categories
+            )
 
     return render_template(
-        'book/new_books.html', unlogged_books=unlogged_books[start:end],
-        total_pages=total_pages, page=page
+        'book/new_books.html', search_results=search_results,
+        search_results_header=search_results_header, categories=categories
         )
 
 def get_book_details(book_id):
@@ -187,24 +180,50 @@ def edit_book_details(book_id):
 
     return render_template('book/edit_book.html', book=book, categories=categories)
 
-@bp.route('/books')
+@bp.route('/books', methods=('GET', 'POST'))
 def browse_books():
-    all_books = get_db().execute(
-        'SELECT book_log.id, MAX(datetime_log), book_status, user_id, book_id, full_name, title, author, category'
-        ' FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id'
-        ' GROUP BY book_id'
-        ' ORDER BY MAX(datetime_log) DESC'
-    ).fetchall()
+    search_results = list()
+    search_results_header = "Search Results"
+    if request.method == 'POST':
+        title = request.form['book_title']
+        author = request.form['book_author']
+        category = request.form['book_category']
+
+        search_results = get_db().execute(
+            'SELECT book_log.id, MAX(datetime_log), book_status, user_id, book_id, full_name, title, author, category'
+            ' FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id'
+            ' WHERE title LIKE "%" || ? || "%"'
+            ' AND author LIKE "%" || ? || "%"'
+            ' AND category LIKE "%" || ? || "%"'
+            ' GROUP BY book_id'
+            ' ORDER BY MAX(datetime_log) DESC', (title, author, category)
+        ).fetchall()
+        print([(book['title'], book['author'], book['category'], book['book_status']) for book in search_results])
+        
+        search_results_header = f"Search Results for Title:'{title}' Author:'{author}' Category:'{category}'"
+
+        # Pagination objects
+        page = request.args.get('page', 1, type=int)
+        per_page = 5
+        start = (page - 1) * per_page
+        end = start + per_page
+        total_pages = (len(search_results) + per_page - 1) // per_page
+
+        return render_template(
+            'book/books.html', search_results=search_results[start:end], search_results_header=search_results_header,
+            badge=badge, categories=categories, total_pages=total_pages, page=page
+            )
+
     # Pagination objects
     page = request.args.get('page', 1, type=int)
     per_page = 5
     start = (page - 1) * per_page
     end = start + per_page
-    total_pages = (len(all_books) + per_page - 1) // per_page
+    total_pages = (len(search_results) + per_page - 1) // per_page
 
     return render_template(
-        'book/books.html', all_books=all_books[start:end], badge=badge,
-        total_pages=total_pages, page=page
+        'book/books.html', search_results=search_results[start:end], search_results_header=search_results_header,
+        badge=badge, categories=categories, total_pages=total_pages, page=page
         )
 
 @bp.route('/delete/<int:book_id>', methods=('GET', 'POST'))

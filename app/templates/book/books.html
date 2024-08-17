@@ -1,16 +1,42 @@
 {% extends 'base.html' %}
 
-{% block title %}Books{% endblock %}
+{% block title %}Browse Books{% endblock %}
 
 {% block content %}
 <div class="card mx-auto" style="width: 24rem;">
     <div class="card-body">
-        <h5 class="card-title text-center">Books</h5>
+        <h5 class="card-title text-center">Browse Books</h5>
+        <form method="post" role="search" class="text-center">
+            <div class="mb-3">
+                <input name="book_title" class="form-control me-2" type="search" placeholder="Search by Title keyword" aria-label="Search">
+            </div>
+            <div class="mb-3">
+                <input name="book_author" class="form-control me-2" type="search" placeholder="Search by Author keyword" aria-label="Search">
+            </div>
+            <div class="mb-3">
+                <label for="selectCategory" class="form-label">Filter by category</label>
+                <select name="book_category" class="form-select" id="selectCategory" aria-label="Default select example">
+                    <option selected></option>
+                    {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <hr>
+            <div class="mb-3 text-center"><button class="btn btn-outline-success" type="submit">Search</button></div>
+          </form>
     </div>
 </div>
 <br>
-{% for book in all_books %}
-<div class="card mx-auto" style="width: 24rem;">
+<div class="card mx-auto">
+    <div class="card-body">
+        <h5 class="card-title text-center">{{ search_results_header }}</h5>
+    </div>
+</div>
+<br>
+{% for book in search_results %}
+<div class="card mx-auto">
     <h6 class="card-header">
         <span class="badge text-bg-{{badge[book['book_status']]}}">{{ book['book_status'] }}</span> |
         <span class="badge text-bg-light">{{ book['MAX(datetime_log)'] }}</span><br>
@@ -28,7 +54,8 @@
 </div>
 <br>
 {% endfor %}
-<div class="container-fluid mx-auto" style="width: 36rem;">
+
+<div class="container-fluid mx-auto">
     <ul class="pagination">
         <li class="page-item">
             {% if page > 1 %}
