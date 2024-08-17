@@ -3,7 +3,7 @@
 {% block title %}Browse Books{% endblock %}
 
 {% block content %}
-<div class="card mx-auto" style="width: 24rem;">
+<div class="card mx-auto" style="width: 21rem;">
     <div class="card-body">
         <h5 class="card-title text-center">Browse Books</h5>
         <form method="post" role="search" class="text-center">
@@ -54,20 +54,4 @@
 </div>
 <br>
 {% endfor %}
-
-<div class="container-fluid mx-auto">
-    <ul class="pagination">
-        <li class="page-item">
-            {% if page > 1 %}
-            <a class="page-link" href="{{ url_for('book.browse_books', page=page-1) }}">Previous</a>
-            {% endif %}
-        </li>
-        <li class="page-item"> <span class="page-link disabled">page {{page}} of {{total_pages}}</span> </li>
-        <li class="page-item">
-            {% if page < total_pages %} <a class="page-link" href="{{ url_for('book.browse_books', page=page+1) }}">
-                Next</a>
-                {% endif %}
-        </li>
-    </ul>
-</div>
 {% endblock %}

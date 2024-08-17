@@ -198,32 +198,20 @@ def browse_books():
             ' GROUP BY book_id'
             ' ORDER BY MAX(datetime_log) DESC', (title, author, category)
         ).fetchall()
-        print([(book['title'], book['author'], book['category'], book['book_status']) for book in search_results])
+        # print([(book['title'], book['author'], book['category'], book['book_status']) for book in search_results])
         
         search_results_header = f"Search Results for Title:'{title}' Author:'{author}' Category:'{category}'"
 
-        # Pagination objects
-        page = request.args.get('page', 1, type=int)
-        per_page = 5
-        start = (page - 1) * per_page
-        end = start + per_page
-        total_pages = (len(search_results) + per_page - 1) // per_page
-
         return render_template(
-            'book/books.html', search_results=search_results[start:end], search_results_header=search_results_header,
-            badge=badge, categories=categories, total_pages=total_pages, page=page
+            'book/books.html', search_results=search_results, 
+            search_results_header=search_results_header,
+            badge=badge, categories=categories,
             )
 
-    # Pagination objects
-    page = request.args.get('page', 1, type=int)
-    per_page = 5
-    start = (page - 1) * per_page
-    end = start + per_page
-    total_pages = (len(search_results) + per_page - 1) // per_page
-
     return render_template(
-        'book/books.html', search_results=search_results[start:end], search_results_header=search_results_header,
-        badge=badge, categories=categories, total_pages=total_pages, page=page
+        'book/books.html', search_results=search_results, 
+        search_results_header=search_results_header,
+        badge=badge, categories=categories,
         )
 
 @bp.route('/delete/<int:book_id>', methods=('GET', 'POST'))

@@ -2,10 +2,13 @@ import sqlite3, csv
 from app.db import get_db
 from pprint import pprint
 
-# conn = sqlite3.connect('instance/app_db.sqlite')
-# c = conn.cursor()
+c = sqlite3.connect(
+            'instance/app_db.sqlite',
+            # detect_types=sqlite3.PARSE_DECLTYPES
+        )
+c.row_factory = sqlite3.Row
 
-# # Bulk INSERT
+# BULK INSERT ON book TABLE
 # with open('library_catalogue.csv', newline='') as csvfile:
 #     reader = csv.DictReader(csvfile)
 #     for row in reader:
@@ -22,15 +25,18 @@ from pprint import pprint
 #         print(inserted_items)
 #         print(f"No. of rows inserted: {len(inserted_items)}")
 
-c = sqlite3.connect(
-            'instance/app_db.sqlite',
-            # detect_types=sqlite3.PARSE_DECLTYPES
+# BULK INSERT ON book_log TABLE (INITIAL LOGS)
+for i in range(1,513):
+    c.execute(
+        'INSERT INTO book_log (remarks, book_status, user_id, book_id)'
+        ' VALUES (?, ?, ?, ?);',
+        ("Newly added to database", "Available", 1, i)
         )
-c.row_factory = sqlite3.Row
-# Other Queries
-title = ''
-author = ''
-category = 'Commentaries'
+
+# # OTHER QUERIES
+# title = ''
+# author = ''
+# category = 'Commentaries'
 
 # query = '''
 # SELECT * FROM book 
@@ -49,22 +55,22 @@ category = 'Commentaries'
 # ORDER BY MAX(datetime_log) DESC
 # '''
 
-query = '''
-SELECT title, author, category FROM book WHERE book.id NOT IN (SELECT book_id FROM book_log)
-AND title LIKE "%" || ? || "%" 
-AND author LIKE "%" || ? || "%" 
-AND category LIKE "%" || ? || "%"
-'''
+# query = '''
+# SELECT title, author, category FROM book WHERE book.id NOT IN (SELECT book_id FROM book_log)
+# AND title LIKE "%" || ? || "%" 
+# AND author LIKE "%" || ? || "%" 
+# AND category LIKE "%" || ? || "%"
+# '''
 
-fetched_items = c.execute(
-    query, 
-    (title, author, category)
-    )
-all_items = fetched_items.fetchall()
-for item in all_items:
-    pprint([i for i in item])
-# print(f"No. of rows: {len(all_items)}")
+# fetched_items = c.execute(
+#     query, 
+#     (title, author, category)
+#     )
+# all_items = fetched_items.fetchall()
+# for item in all_items:
+#     pprint([i for i in item])
+# # print(f"No. of rows: {len(all_items)}")
 
-# conn.commit()
+c.commit()
 
-# conn.close()
+c.close()
