@@ -67,12 +67,12 @@
     <ul class="pagination">
         <li class="page-item">
             {% if page > 1 %}
-            <a class="page-link" href="{{ url_for('book.browse_books', page=page-1) }}">Previous</a>
+            <a class="page-link" href="{{ url_for('auth.user_page', page=page-1, user_id=session['user_id']) }}">Previous</a>
             {% endif %}
         </li>
         <li class="page-item"> <span class="page-link disabled">page {{page}} of {{total_pages}}</span> </li>
         <li class="page-item">
-            {% if page < total_pages %} <a class="page-link" href="{{ url_for('book.browse_books', page=page+1) }}">
+            {% if page < total_pages %} <a class="page-link" href="{{ url_for('auth.user_page', page=page+1, user_id=session['user_id']) }}">
                 Next</a>
                 {% endif %}
         </li>
