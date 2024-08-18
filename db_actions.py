@@ -38,6 +38,10 @@ for i in range(1,513):
 # author = ''
 # category = 'Commentaries'
 
+# query = """
+# SELECT * from user;
+# """
+
 # query = '''
 # SELECT * FROM book 
 # WHERE title LIKE "%" || ? || "%" 
@@ -64,12 +68,12 @@ for i in range(1,513):
 
 # fetched_items = c.execute(
 #     query, 
-#     (title, author, category)
+#     # (title, author, category)
 #     )
 # all_items = fetched_items.fetchall()
+# # print(all_items)
 # for item in all_items:
 #     pprint([i for i in item])
-# # print(f"No. of rows: {len(all_items)}")
 
 c.commit()
 
