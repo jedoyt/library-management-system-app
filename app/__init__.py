@@ -44,4 +44,7 @@ def create_app(test_config=None):
     from . import book
     app.register_blueprint(book.bp)
 
+    from . import error_handlers
+    app.register_blueprint(error_handlers.bp)
+
     return app
