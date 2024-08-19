@@ -191,9 +191,6 @@ def paginate_results(results, page, per_page):
 @bp.route('/books', methods=('GET', 'POST'))
 @login_required
 def browse_books():
-    search_results = list()
-    search_results_header = ""
-
     if request.method == 'POST':
         title = request.form['book_title']
         author = request.form['book_author']
@@ -209,19 +206,22 @@ def browse_books():
             ' ORDER BY MAX(datetime_log) DESC', (title, author, category)
         ).fetchall()
         
+        search_results_header = f"Search results for Title: '{title}' Author: '{author}' Category: '{category}'"
+
         if search_results:
             # Convert SQLite Row objects to dictionaries
             results = [dict(row) for row in search_results]
             # Store the search results in the session
             session['results'] = results
-
+            session['results_header'] = search_results_header
             return redirect(url_for('book.browse_books'))
         else:
             # No results found
-            return (render_template('book.books.html', search_results_header="No results found!"))
+            return (render_template('book/books.html', search_results_header="No results found!"))
     else:
         # Retrieve the search results from the session, if any
         results = session.get('results')
+        search_results_header = session.get('results_header')
         if results:
             # Paginate the search results
             page = request.args.get('page', 1, type=int)
@@ -230,8 +230,8 @@ def browse_books():
             total_pages = len(results) // per_page + (len(results) % per_page > 0)
 
             return render_template(
-                'book/books.html', search_results_header=search_results_header, search_results=paginated_results, total_pages=total_pages, current_page=page,
-                badge=badge, categories=categories,
+                'book/books.html', search_results_header=search_results_header, search_results=paginated_results, 
+                total_pages=total_pages, current_page=page, badge=badge, categories=categories,
             )
         else:
             # Render the initial search page

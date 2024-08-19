@@ -32,14 +32,13 @@
     </div>
 </div>
 <br>
-
+{% if search_results %}
 <div class="card mx-auto">
     <div class="card-body">
         <h5 class="card-title text-center">{{ search_results_header }}</h5>
     </div>
 </div>
 <br>
-{% if search_results %}
 {% for book in search_results %}
 <div class="card mx-auto">
     <h6 class="card-header">
@@ -81,5 +80,12 @@
     </ul>
     {% endif %}
 </div>
+{% else %}
+<div class="card mx-auto">
+    <div class="card-body">
+        <h5 class="card-title text-center">{{ search_results_header }}</h5>
+    </div>
+</div>
+<br>
 {% endif %}
 {% endblock %}
