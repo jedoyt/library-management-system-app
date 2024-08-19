@@ -22,15 +22,22 @@ def index():
     # Pagination objects
     page = request.args.get('page', 1, type=int)
     per_page = 5
-    start = (page - 1) * per_page
-    end = start + per_page
-    total_pages = (len(book_logs) + per_page - 1) // per_page
+    paginated_results = paginate_results(book_logs, page, per_page)
+    total_pages = len(book_logs) // per_page + (len(book_logs) % per_page > 0)
 
     return render_template(
-        'book_log/index.html', book_logs=book_logs[start:end], 
-        badge=badge, total_pages=total_pages, page=page
+        'book_log/index.html', book_logs=paginated_results, 
+        total_pages=total_pages, current_page=page, badge=badge
         )
 
+# Helper for pagination
+def paginate_results(results, page, per_page):
+    start = (page - 1) * per_page
+    end = start + per_page
+    # print([r for r in results][:5])
+    return [r for r in results][start:end]
+
+# Helper for getting book details
 def get_book_details(book_id):
     book = get_db().execute(
         'SELECT id, isbn, title, author, category, book_desc'

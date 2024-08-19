@@ -30,19 +30,25 @@
 <br>
 {% endfor %}
 <div class="container-fluid mx-auto">
+    {% if total_pages > 1 %}
     <ul class="pagination">
-        <li class="page-item">
-            {% if page > 1 %}
-            <a class="page-link" href="{{ url_for('book_log.index', page=page-1) }}">Previous</a>
+        {% if current_page > 1 %}
+        <li class="page-item"><a class="page-link" href="/?page=1">First</a></li>
+        <li class="page-item"><a class="page-link" href="/?page-={{ current_page - 1 }}">Previous</a></li>
+        {% endif %}
+        <li class="page-item"><span class="page-link disabled"> Page {{ current_page }} of {{ total_pages }} </span></li>
+        <!-- {% for i in range(1, total_pages + 1) %}
+            {% if i == current_page %}
+            <li class="page-item"><span class="page-link disabled"> {{ i }} </span></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="/books?page={{ i }}"> {{ i }} </a></li>
             {% endif %}
-        </li>
-        <li class="page-item"> <span class="page-link disabled"> page {{page}} of {{total_pages}} </span> </li>
-        <li class="page-item">
-            {% if page < total_pages %} <a class="page-link" href="{{ url_for('book_log.index', page=page+1) }}">
-                Next</a>
-                {% endif %}
-        </li>
+        {% endfor %} -->
+        {% if current_page < total_pages %}
+        <li class="page-item"><a class="page-link" href="/?page={{ current_page + 1 }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="/?page={{ total_pages }}">Last</a></li>
+        {% endif %}
     </ul>
-    <a class="btn btn-outline-secondary" href="{{ url_for('book.browse_books') }}">Back to Browse</a>
+    {% endif %}
 </div>
 {% endblock %}

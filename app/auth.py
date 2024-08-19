@@ -154,24 +154,32 @@ def user_page(user_id):
                 return render_template('auth/user_page.html', error=error)
             else:
                 return redirect(url_for('auth.user_page', user_id=session['user_id']))
-    user_logs = get_db().execute(
-        'SELECT book_log.id, datetime_log, book_status, user_id, book_id, full_name, title, author, category'
-        ' FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id'
-        ' WHERE user_id = ?'
-        ' ORDER BY datetime_log DESC', (user_id,)
-    ).fetchall()
+    else:
+        user_logs = get_db().execute(
+            'SELECT book_log.id, datetime_log, book_status, user_id, book_id, full_name, title, author, category'
+            ' FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id'
+            ' WHERE user_id = ?'
+            ' ORDER BY datetime_log DESC', (user_id,)
+        ).fetchall()
+        
+        session['user_logs'] = [dict(log) for log in user_logs]
+        # Paginate the search results
+        page = request.args.get('page', 1, type=int)
+        per_page = 5
+        paginated_results = paginate_results(session['user_logs'], page, per_page)
+        total_pages = len(session['user_logs']) // per_page + (len(session['user_logs']) % per_page > 0)
+
+        return render_template(
+            'auth/user_page.html', error=error, user_logs=paginated_results,
+            badge=badge, total_pages=total_pages, current_page=page
+            )
     
-    # Pagination objects
-    page = request.args.get('page', 1, type=int)
-    per_page = 5
+# Helper for pagination
+def paginate_results(results, page, per_page):
     start = (page - 1) * per_page
     end = start + per_page
-    total_pages = (len(user_logs) + per_page - 1) // per_page
-
-    return render_template(
-        'auth/user_page.html', error=error, user_logs=user_logs[start:end],
-        badge=badge, total_pages=total_pages, page=page
-        )
+    # print([r for r in results][:5])
+    return [r for r in results][start:end]
 
 @bp.route('/logout')
 def logout():
