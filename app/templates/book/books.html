@@ -8,14 +8,17 @@
         <h5 class="card-title text-center">Browse Books</h5>
         <form method="post" role="search" class="text-center">
             <div class="mb-3">
-                <input name="book_title" class="form-control me-2" type="search" placeholder="Search by Title keyword" aria-label="Search">
+                <input name="book_title" class="form-control me-2" type="search" placeholder="Search by Title keyword"
+                    aria-label="Search">
             </div>
             <div class="mb-3">
-                <input name="book_author" class="form-control me-2" type="search" placeholder="Search by Author keyword" aria-label="Search">
+                <input name="book_author" class="form-control me-2" type="search" placeholder="Search by Author keyword"
+                    aria-label="Search">
             </div>
             <div class="mb-3">
                 <label for="selectCategory" class="form-label">Filter by category</label>
-                <select name="book_category" class="form-select" id="selectCategory" aria-label="Default select example">
+                <select name="book_category" class="form-select" id="selectCategory"
+                    aria-label="Default select example">
                     <option selected></option>
                     {% for category in categories %}
                     <option value="{{ category }}">{{ category }}</option>
@@ -25,16 +28,18 @@
 
             <hr>
             <div class="mb-3 text-center"><button class="btn btn-outline-success" type="submit">Search</button></div>
-          </form>
+        </form>
     </div>
 </div>
 <br>
+
 <div class="card mx-auto">
     <div class="card-body">
         <h5 class="card-title text-center">{{ search_results_header }}</h5>
     </div>
 </div>
 <br>
+{% if search_results %}
 {% for book in search_results %}
 <div class="card mx-auto">
     <h6 class="card-header">
@@ -45,8 +50,8 @@
     <div class="card-body">
         <h6 class="card-subtitle">{{ book['title'] }}, {{ book['author'] }}</h6>
         <p class="card-text">Category: {{ book['category'] }}</p>
-        <a class="btn btn-secondary" href="{{ url_for('book.view_book_details', book_id=book['book_id']) }}">View
-            Details</a>
+        <a class="btn btn-outline-secondary"
+            href="{{ url_for('book.view_book_details', book_id=book['book_id']) }}">View Details</a>
         {% if g.user['library_staff'] %}
         <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=book['book_id']) }}">Enter new Log</a>
         {% endif %}
@@ -54,4 +59,27 @@
 </div>
 <br>
 {% endfor %}
+<div class="container-fluid mx-auto">
+    {% if total_pages > 1 %}
+    <ul class="pagination">
+        {% if current_page > 1 %}
+        <li class="page-item"><a class="page-link" href="/books?page=1">First</a></li>
+        <li class="page-item"><a class="page-link" href="/books?page-={{ current_page - 1 }}">Previous</a></li>
+        {% endif %}
+        <li class="page-item"><span class="page-link disabled"> Page {{ current_page }} of {{ total_pages }} </span></li>
+        <!-- {% for i in range(1, total_pages + 1) %}
+            {% if i == current_page %}
+            <li class="page-item"><span class="page-link disabled"> {{ i }} </span></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="/books?page={{ i }}"> {{ i }} </a></li>
+            {% endif %}
+        {% endfor %} -->
+        {% if current_page < total_pages %}
+        <li class="page-item"><a class="page-link" href="/books?page={{ current_page + 1 }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="/books?page={{ total_pages }}">Last</a></li>
+        {% endif %}
+    </ul>
+    {% endif %}
+</div>
+{% endif %}
 {% endblock %}

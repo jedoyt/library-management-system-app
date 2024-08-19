@@ -47,13 +47,14 @@ def borrow_book(book_id):
     book_info = get_db().execute(
         "SELECT * FROM book WHERE id = ?", (book_id,)
     ).fetchone()
-    
+        
     db = get_db()
     db.execute(
         'INSERT INTO book_log (book_status, user_id, book_id) VALUES (?, ?, ?)',
         ("Borrowed", session['user_id'], book_info['id'])
     )
     db.commit()
+    
     return redirect(url_for('book.view_book_details', book_id=book_id))
 
 @bp.route('/return/<int:book_id>', methods=('GET', 'POST'))
@@ -62,13 +63,14 @@ def return_book(book_id):
     book_info = get_db().execute(
         "SELECT * FROM book WHERE id = ?", (book_id,)
     ).fetchone()
-    
+        
     db = get_db()
     db.execute(
         'INSERT INTO book_log (book_status, user_id, book_id) VALUES (?, ?, ?)',
         ("Returned", session['user_id'], book_info['id'])
     )
     db.commit()
+    
     return redirect(url_for('book.view_book_details', book_id=book_id))
 
 @bp.route('/log_entry/<int:book_id>', methods=('GET', 'POST'))
@@ -96,3 +98,34 @@ def enter_log(book_id):
             return redirect(url_for('book_log.index'))
 
     return render_template('book_log/log_entry.html', book_info=book_info, book_status_list=book_status_list)
+
+@bp.route('/edit_log/<int:log_id>', methods=('GET', 'POST'))
+@login_required
+def edit_log(log_id):
+    log_info = get_db().execute(
+        "SELECT book_log.id, datetime_log, remarks, book_status, user_id, book_id, title, author, full_name"
+        " FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id"
+        " WHERE book_log.id = ?", (log_id,)
+    ).fetchone()
+    if request.method == 'POST':
+        book_status = request.form['book_status']
+        book_remarks = request.form['book_remarks']
+        
+        error = None
+        if not book_status:
+            error = "Status is required."
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+            db.execute(
+                'UPDATE book_log SET book_status = ? , remarks = ? WHERE book_log.id = ?;',
+                (book_status, book_remarks, log_id)
+            )
+            db.commit()
+            return redirect(url_for('book_log.index'))
+
+    return render_template(
+        'book_log/edit_log.html', log_info=log_info, 
+        book_status_list=book_status_list, badge=badge
+        )

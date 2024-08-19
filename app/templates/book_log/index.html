@@ -21,28 +21,28 @@
     <div class="card-body">
         <p class="card-text">{{ log['title'] }} ({{ log['author'] }}) </p>
         <p class="card-text">Remarks/Comments:<br><small>{{ log['remarks'] }}</small></p>
-        <a class="btn btn-secondary" href="{{ url_for('book.view_book_details', book_id=log['book_id']) }}">View Book
-            Details</a>
+        <a class="btn btn-outline-secondary" href="{{ url_for('book.view_book_details', book_id=log['book_id']) }}">View Book Details</a>
         {% if g.user['library_staff'] %}
-        <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=log['book_id']) }}">Edit this log</a>
+        <a class="btn btn-info" href="{{ url_for('book_log.edit_log', log_id=log['id']) }}">Edit this log</a>
         {% endif %}
     </div>
 </div>
 <br>
 {% endfor %}
-<div class="container-fluid mx-auto" style="width: 36rem;">
+<div class="container-fluid mx-auto">
     <ul class="pagination">
         <li class="page-item">
             {% if page > 1 %}
             <a class="page-link" href="{{ url_for('book_log.index', page=page-1) }}">Previous</a>
             {% endif %}
         </li>
-        <li class="page-item"> <span class="page-link disabled">page {{page}} of {{total_pages}}</span> </li>
+        <li class="page-item"> <span class="page-link disabled"> page {{page}} of {{total_pages}} </span> </li>
         <li class="page-item">
             {% if page < total_pages %} <a class="page-link" href="{{ url_for('book_log.index', page=page+1) }}">
                 Next</a>
                 {% endif %}
         </li>
     </ul>
+    <a class="btn btn-outline-secondary" href="{{ url_for('book.browse_books') }}">Back to Browse</a>
 </div>
 {% endblock %}

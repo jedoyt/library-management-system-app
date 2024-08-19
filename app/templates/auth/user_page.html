@@ -54,7 +54,7 @@
         <p class="card-text">user: {{ log['full_name'] }}</p>
         <p class="card-text">Remarks/Comments:<br><small>{{ log['remarks'] }}</small></p>
         {% if g.user['library_staff'] %}
-        <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=log['book_id']) }}">Edit this log</a>
+        <a class="btn btn-info" href="{{ url_for('book_log.edit_log', log_id=log['id']) }}">Edit this log</a>
         {% endif %}
     </div>
 </div>
@@ -70,7 +70,7 @@
             <a class="page-link" href="{{ url_for('auth.user_page', page=page-1, user_id=session['user_id']) }}">Previous</a>
             {% endif %}
         </li>
-        <li class="page-item"> <span class="page-link disabled">page {{page}} of {{total_pages}}</span> </li>
+        <li class="page-item"> <span class="page-link disabled"> page {{page}} of {{total_pages}} </span> </li>
         <li class="page-item">
             {% if page < total_pages %} <a class="page-link" href="{{ url_for('auth.user_page', page=page+1, user_id=session['user_id']) }}">
                 Next</a>

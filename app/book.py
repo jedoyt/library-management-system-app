@@ -1,3 +1,4 @@
+import sqlite3
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -180,10 +181,19 @@ def edit_book_details(book_id):
 
     return render_template('book/edit_book.html', book=book, categories=categories)
 
+# Helper for pagination of browse_books
+def paginate_results(results, page, per_page):
+    start = (page - 1) * per_page
+    end = start + per_page
+    # print([r for r in results][:5])
+    return [r for r in results][start:end]
+
 @bp.route('/books', methods=('GET', 'POST'))
+@login_required
 def browse_books():
     search_results = list()
-    search_results_header = "Search Results"
+    search_results_header = ""
+
     if request.method == 'POST':
         title = request.form['book_title']
         author = request.form['book_author']
@@ -198,21 +208,34 @@ def browse_books():
             ' GROUP BY book_id'
             ' ORDER BY MAX(datetime_log) DESC', (title, author, category)
         ).fetchall()
-        # print([(book['title'], book['author'], book['category'], book['book_status']) for book in search_results])
         
-        search_results_header = f"Search Results for Title:'{title}' Author:'{author}' Category:'{category}'"
+        if search_results:
+            # Convert SQLite Row objects to dictionaries
+            results = [dict(row) for row in search_results]
+            # Store the search results in the session
+            session['results'] = results
 
-        return render_template(
-            'book/books.html', search_results=search_results, 
-            search_results_header=search_results_header,
-            badge=badge, categories=categories,
+            return redirect(url_for('book.browse_books'))
+        else:
+            # No results found
+            return (render_template('book.books.html', search_results_header="No results found!"))
+    else:
+        # Retrieve the search results from the session, if any
+        results = session.get('results')
+        if results:
+            # Paginate the search results
+            page = request.args.get('page', 1, type=int)
+            per_page = 5
+            paginated_results = paginate_results(results, page, per_page)
+            total_pages = len(results) // per_page + (len(results) % per_page > 0)
+
+            return render_template(
+                'book/books.html', search_results_header=search_results_header, search_results=paginated_results, total_pages=total_pages, current_page=page,
+                badge=badge, categories=categories,
             )
-
-    return render_template(
-        'book/books.html', search_results=search_results, 
-        search_results_header=search_results_header,
-        badge=badge, categories=categories,
-        )
+        else:
+            # Render the initial search page
+            return render_template('book/books.html')
 
 @bp.route('/delete/<int:book_id>', methods=('GET', 'POST'))
 @login_required

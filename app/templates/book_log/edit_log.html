@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Log{% endblock %}
+
+{% block content %}
+<div class="card mx-auto" style="width: 21rem;">
+    <h6 class="card-header">
+        <span class="badge text-bg-{{badge[log_info['book_status']]}}">{{ log_info['book_status'] }}</span>
+        <span class="badge text-bg-light">{{ log_info['datetime_log'] }}</span>
+        <span class="badge text-bg-light">user: {{ log_info['full_name'] }}</span>
+    </h6>
+    <div class="card-body">
+        <h5 class="card-title text-center">Edit Log</h5>
+        <h6 class="card-subtitle">{{ log_info['title'] }}, {{ log_info['author']}}</h6>
+        <p class="card-text">Category: {{ log_info['category'] }}</p>
+        <form method="post">
+            <div class="mb-3">
+                <label for="bookStatus" class="form-label">Status Update</label>
+                <select name="book_status" class="form-select" id="bookStatus" required>
+                    <option selected></option>
+                    {% for status in book_status_list %}
+                    <option value="{{ status }}">{{ status }}</option>
+                    {% endfor %}
+                  </select>
+                <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <label for="bookRemarks" class="form-label">Remarks (optional)</label>
+                <textarea name="book_remarks" class="form-control" rows="5" id="bookRemarks">{{ log_info['remarks'] }}</textarea>
+            </div>
+            <hr>
+            <div class="mb-2 text-center">
+                <div class="row">
+                    <div class="col">
+                        <a type="button" class="btn btn-outline-secondary" href="{{ url_for('book_log.index') }}">Back to Home</a>
+                    </div>
+                    <div class="col">
+                        <input type="submit" class="btn btn-info" value="Update">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

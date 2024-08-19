@@ -12,7 +12,7 @@
 <div class="card mx-auto" style="width: 21rem;">
     <div class="card-header">
         <h6 class="card-subtitle">
-            <span class="badge text-bg-{{badge[latest_log['book_status']]}}">{{ latest_log['book_status'] }}</span> 
+            <span class="badge text-bg-{{badge[latest_log['book_status']]}}">{{ latest_log['book_status'] }}</span>
             <span class="badge text-bg-light">{{ latest_log['datetime_log'] }}</span>
         </h6>
     </div>
@@ -27,18 +27,52 @@
         <p><small class="card-text">Publisher: {{ book['publisher'] }}</small></p>
         <p><small class="card-text">Date published: {{ book['date_published'] }}</small></p>
         <p><small class="card-text">Date added: {{ book['date_added'] }}</small></p>
-        {% if latest_log['book_status'] == "Available" %}
-        <a class="btn btn-secondary" href="{{ url_for('book_log.borrow_book', book_id=book['id']) }}">Borrow</a>
-        {% elif latest_log['book_status'] == "Borrowed" %}
+        <div class="mb-2 text-center">
+            {% if latest_log['book_status'] == "Available" %}
+            <!-- Button trigger modal -->
+            <a class="btn btn-secondary" type="button" href="{{ url_for('book_log.borrow_book', book_id=book['id']) }}">Borrow</a>
+            {% elif latest_log['book_status'] == "Borrowed" %}
             {% if latest_log['user_id'] == session['user_id'] %}
-            <a class="btn btn-dark" href="{{ url_for('book_log.return_book', book_id=book['id']) }}">Return</a>
+            <a class="btn btn-dark" type="button" href="{{ url_for('book_log.return_book', book_id=book['id']) }}" >Return</a>
             {% endif %}
-        {% endif %}
+            <!-- Modal -->
+            <!-- <div class="modal fade" id="borrowReturnModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Comments/Remarks (optional):</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancel"></button>
+                        </div>
+                        <form action="post">
+                            <div class="modal-body">
+                                <textarea name="remarks" class="form-control" rows="5"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Confirm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> -->
+            {% endif %}
+        </div>
         <hr>
-        {% if g.user['library_staff'] %}
-        <a class="btn btn-danger" href="{{ url_for('book.edit_book_details', book_id=book['id']) }}">Edit book details</a>
-        <a class="btn btn-info" href="{{ url_for('book_log.enter_log', book_id=book['id']) }}">Enter new log</a>
-        {% endif %}
+        <div class="mb-2 text-center">
+            <div class="row">
+                {% if g.user['library_staff'] %}
+                <div class="col">
+                    <a class="btn btn-outline-danger"
+                        href="{{ url_for('book.edit_book_details', book_id=book['id']) }}">Edit book details</a>
+                </div>
+                <div class="col">
+                    <a class="col btn btn-info" href="{{ url_for('book_log.enter_log', book_id=book['id']) }}">Enter new
+                        log</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 <br>
@@ -55,7 +89,7 @@
 <div class="card mx-auto">
     <div class="card-header">
         <h6 class="card-subtitle">
-            <span class="badge text-bg-{{badge[log['book_status']]}}">{{ log['book_status'] }}</span> 
+            <span class="badge text-bg-{{badge[log['book_status']]}}">{{ log['book_status'] }}</span>
             <span class="badge text-bg-light">{{ log['datetime_log'] }}</span>
         </h6>
     </div>
