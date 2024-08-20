@@ -2,7 +2,8 @@ import sqlite3
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
-from werkzeug.exceptions import abort
+from werkzeug.exceptions import abort, Unauthorized, Forbidden
+
 
 from app.auth import login_required
 from app.db import get_db
@@ -58,11 +59,18 @@ def add_book():
             # log_new_book(book_id=recent_id)
             
             return redirect(url_for('book.new_books'))
+    
+    if not g.user['library_staff']:
+        raise Unauthorized
+
     return render_template('book/add_book.html', categories=categories)
 
 @bp.route('/new_books', methods=('GET', 'POST'))
 @login_required
 def new_books():
+    if not g.user['library_staff']:
+        raise Forbidden
+
     search_results = list()
     search_results_header = f"Search Results"
 
@@ -178,6 +186,9 @@ def edit_book_details(book_id):
             )
             db.commit()
             return redirect(url_for('book.view_book_details', book_id=book_id))
+    
+    if not g.user['library_staff']:
+        raise Unauthorized
 
     return render_template('book/edit_book.html', book=book, categories=categories)
 
@@ -240,6 +251,8 @@ def browse_books():
 @bp.route('/delete/<int:book_id>', methods=('GET', 'POST'))
 @login_required
 def delete_book(book_id):
+    if not g.user['library_staff']:
+        raise Unauthorized
     get_book_details(book_id=book_id)
     db = get_db()
     db.execute('DELETE FROM book WHERE id = ?', (book_id,))

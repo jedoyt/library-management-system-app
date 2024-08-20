@@ -1,7 +1,7 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
-from werkzeug.exceptions import abort
+from werkzeug.exceptions import abort, Unauthorized, BadRequest
 
 from app.auth import login_required
 from app.db import get_db
@@ -38,19 +38,35 @@ def paginate_results(results, page, per_page):
     return [r for r in results][start:end]
 
 # Helper for getting book details
-def get_book_details(book_id):
-    book = get_db().execute(
-        'SELECT id, isbn, title, author, category, book_desc'
-        ' FROM book WHERE id = ?', (book_id,)
-    ).fetchone()
+# def get_book_details(book_id):
+#     book = get_db().execute(
+#         'SELECT id, isbn, title, author, category, book_desc'
+#         ' FROM book WHERE id = ?', (book_id,)
+#     ).fetchone()
 
-    if book is None:
-        abort(404, f"Book id {book_id} doesn't exist.")
-    return book
+#     if book is None:
+#         abort(404, f"Book id {book_id} doesn't exist.")
+#     return book
+
+# Helper for borrow and return for user authentication
+def last_book_log(book_id):
+    last_log = get_db().execute(
+        "SELECT book_log.id, book_status, MAX(datetime_log), user_id FROM book_log"
+        " WHERE book_id = ?"
+        " GROUP BY book_id"
+        " ORDER BY MAX(book_log.id) DESC;", (book_id,)
+    ).fetchone()
+    print(f"Last Book Log: {dict(last_log)}")
+    return last_log
 
 @bp.route('/borrow/<int:book_id>', methods=('GET', 'POST'))
 @login_required
 def borrow_book(book_id):
+    # Check if book's last log is in "Available" status
+    last_log = last_book_log(book_id=book_id)
+    if last_log['book_status'] != 'Available':
+        raise BadRequest
+    
     book_info = get_db().execute(
         "SELECT * FROM book WHERE id = ?", (book_id,)
     ).fetchone()
@@ -67,6 +83,14 @@ def borrow_book(book_id):
 @bp.route('/return/<int:book_id>', methods=('GET', 'POST'))
 @login_required
 def return_book(book_id):
+    # Check if book's last log is in "Borrowed" status
+    last_log = last_book_log(book_id=book_id)
+    if last_log['book_status'] != 'Borrowed':
+        raise BadRequest
+    # Check if current user is the one who borrowed the book
+    if last_log['user_id'] != session['user_id']:
+        raise BadRequest
+
     book_info = get_db().execute(
         "SELECT * FROM book WHERE id = ?", (book_id,)
     ).fetchone()
@@ -83,6 +107,8 @@ def return_book(book_id):
 @bp.route('/log_entry/<int:book_id>', methods=('GET', 'POST'))
 @login_required
 def enter_log(book_id):
+    if not g.user['library_staff']:
+        raise Unauthorized
     book_info = get_db().execute(
         "SELECT * FROM book WHERE id = ?", (book_id,)
     ).fetchone()
@@ -109,6 +135,8 @@ def enter_log(book_id):
 @bp.route('/edit_log/<int:log_id>', methods=('GET', 'POST'))
 @login_required
 def edit_log(log_id):
+    if not g.user['library_staff']:
+        raise Unauthorized
     log_info = get_db().execute(
         "SELECT book_log.id, datetime_log, remarks, book_status, user_id, book_id, title, author, full_name"
         " FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id"
