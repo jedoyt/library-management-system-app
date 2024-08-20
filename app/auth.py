@@ -104,9 +104,13 @@ def login():
         user = db.execute('SELECT * FROM user WHERE email = ?', (email,)).fetchone()
 
         if user is None:
-            error = 'Incorrect Email.'
+            error = 'Incorrect email or password'
         elif not check_password_hash(user['user_password'], password=password):
-            error = 'Incorrect password.'
+            error = 'Incorrect email or password'
+
+        if error:
+            session['login_error'] = error
+            return render_template('auth/login.html', error=session['login_error'])
 
         if error is None:
             session.clear()

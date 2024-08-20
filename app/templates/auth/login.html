@@ -6,6 +6,9 @@
 <div class="card mx-auto" style="width: 21rem;">
     <div class="card-body">
         <h5 class="card-title text-center">Staff / Borrower Login</h5>
+        {% if error %}
+        <div class="text-center"><small>{{ error }}</small></div>
+        {% endif %}
         <form method="post">
             <div class="mb-3">
                 <label for="InputEmail" class="form-label"></label>
