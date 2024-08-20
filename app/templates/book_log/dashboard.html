@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="card mx-auto">
+    <div class="card-header text-center">
+        Librarian's Dashboard
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col"><a class="btn btn-outline-secondary" href="#">Borrowed Books</a></div>
+            <div class="col"><a class="btn btn-outline-dark" href="#">Returned Books</a></div>
+            <div class="col"><a class="btn btn-outline-primary" href="#">View User Accounts</a></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

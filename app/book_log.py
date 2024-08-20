@@ -1,7 +1,7 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
-from werkzeug.exceptions import abort, Unauthorized, BadRequest
+from werkzeug.exceptions import abort, Unauthorized, BadRequest, Forbidden
 
 from app.auth import login_required
 from app.db import get_db
@@ -164,3 +164,9 @@ def edit_log(log_id):
         'book_log/edit_log.html', log_info=log_info, 
         book_status_list=book_status_list, badge=badge
         )
+
+@bp.route('/dashboard')
+def dashboard():
+    if not g.user['library_staff']:
+        raise Forbidden
+    return render_template('book_log/dashboard.html')
