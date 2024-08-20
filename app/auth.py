@@ -17,6 +17,7 @@ def register():
     When they submit the form, it will validate their input and either show the form again with an error message or 
     create the new user and go to the login page.
     """
+    error = ""
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -41,10 +42,13 @@ def register():
                 )
                 db.commit()
             except db.IntegrityError:
-                error = f"Email {email} ({full_name}) is already registered."
+                error = f"Email is already registered."
+                session['registration_error'] = error
+                return render_template('auth/register.html', error=session['registration_error'])
             else:
                 return redirect(url_for("auth.login"))
         flash(error)
+
     return render_template('auth/register.html')
 
 
@@ -78,10 +82,13 @@ def register_staff():
                 )
                 db.commit()
             except db.IntegrityError:
-                error = f"Email {email} ({full_name}) is already registered."
+                error = f"Email is already registered."
+                session['registration_error'] = error
+                return render_template('auth/register_staff.html', error=session['registration_error'])
             else:
                 return redirect(url_for("auth.login"))
         flash(error)
+
     return render_template('auth/register_staff.html')
 
 @bp.route('/login', methods=('GET', 'POST'))
