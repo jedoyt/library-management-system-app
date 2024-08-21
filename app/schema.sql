@@ -28,7 +28,7 @@ CREATE TABLE book (
 
 CREATE TABLE book_log (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    datetime_log TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    datetime_log TIMESTAMP NOT NULL,
     remarks TEXT,
     book_status TEXT NOT NULL,
     user_id INTEGER NOT NULL,

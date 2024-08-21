@@ -14,7 +14,7 @@
     <div class="card-header">
         <h6 class="card-subtitle">
             <span class="badge text-bg-{{badge[log['book_status']]}}">{{ log['book_status'] }}</span>
-            <span class="badge text-bg-light">{{ log['datetime_log'] }}</span>
+            <span class="badge text-bg-light">{{ log['datetime_log'].strftime('%B %-d, %Y, %-I:%M %p') }}</span>
             <span class="badge text-bg-light">user: {{ log['full_name'] }}</span>
         </h6>
     </div>

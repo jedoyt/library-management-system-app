@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -48,7 +49,7 @@ def paginate_results(results, page, per_page):
 #         abort(404, f"Book id {book_id} doesn't exist.")
 #     return book
 
-# Helper for borrow and return for user authentication
+# Helper for user authentication on borrow and return
 def last_book_log(book_id):
     last_log = get_db().execute(
         "SELECT book_log.id, book_status, MAX(datetime_log), user_id FROM book_log"
@@ -73,8 +74,8 @@ def borrow_book(book_id):
         
     db = get_db()
     db.execute(
-        'INSERT INTO book_log (book_status, user_id, book_id) VALUES (?, ?, ?)',
-        ("Borrowed", session['user_id'], book_info['id'])
+        'INSERT INTO book_log (datetime_log, book_status, user_id, book_id) VALUES (?, ?, ?, ?)',
+        (datetime.now(), "Borrowed", session['user_id'], book_info['id'])
     )
     db.commit()
     
@@ -97,8 +98,8 @@ def return_book(book_id):
         
     db = get_db()
     db.execute(
-        'INSERT INTO book_log (book_status, user_id, book_id) VALUES (?, ?, ?)',
-        ("Returned", session['user_id'], book_info['id'])
+        'INSERT INTO book_log (datetime_log, book_status, user_id, book_id) VALUES (?, ?, ?, ?)',
+        (datetime.now(), "Returned", session['user_id'], book_info['id'])
     )
     db.commit()
     
@@ -113,6 +114,7 @@ def enter_log(book_id):
         "SELECT * FROM book WHERE id = ?", (book_id,)
     ).fetchone()
     if request.method == 'POST':
+        datetime_log = datetime.now()
         book_status = request.form['book_status']
         book_remarks = request.form['book_remarks']
         
@@ -124,8 +126,8 @@ def enter_log(book_id):
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO book_log (remarks, book_status, user_id, book_id) VALUES (?, ?, ?, ?)',
-                (book_remarks, book_status, g.user['id'], book_info['id'])
+                'INSERT INTO book_log (datetime_log, remarks, book_status, user_id, book_id) VALUES (?, ?, ?, ?, ?)',
+                (datetime_log, book_remarks, book_status, g.user['id'], book_info['id'])
             )
             db.commit()
             return redirect(url_for('book_log.index'))

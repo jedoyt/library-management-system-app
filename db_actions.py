@@ -1,5 +1,5 @@
 import sqlite3, csv
-from app.db import get_db
+from datetime import datetime
 from pprint import pprint
 
 c = sqlite3.connect(
@@ -9,28 +9,28 @@ c = sqlite3.connect(
 c.row_factory = sqlite3.Row
 
 # BULK INSERT ON book TABLE
-# with open('library_catalogue.csv', newline='') as csvfile:
-#     reader = csv.DictReader(csvfile)
-#     for row in reader:
-#         print(row)
+with open('library_catalogue.csv', newline='') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        print(row)
 
-#         inserted_items = c.execute(
-#             "INSERT INTO book (title, author, category, ean_isbn13,"
-#             " upc_isbn10, book_desc, publisher, date_published, date_added, pages)"
-#             " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-#             (row['title'], row['author'], row['category'], row['ean_isbn13'], 
-#              row['upc_isbn10'], row['description'], row['publisher'], row['publish_date'], row['added'], row['length'])
-#         ).fetchall()
+        inserted_items = c.execute(
+            "INSERT INTO book (title, author, category, ean_isbn13,"
+            " upc_isbn10, book_desc, publisher, date_published, date_added, pages)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+            (row['title'], row['author'], row['category'], row['ean_isbn13'], 
+             row['upc_isbn10'], row['description'], row['publisher'], row['publish_date'], row['added'], row['length'])
+        ).fetchall()
 
-#         print(inserted_items)
-#         print(f"No. of rows inserted: {len(inserted_items)}")
+        print(inserted_items)
+        # print(f"No. of rows inserted: {len(inserted_items)}")
 
 # BULK INSERT ON book_log TABLE (INITIAL LOGS)
 for i in range(1,513):
     c.execute(
-        'INSERT INTO book_log (remarks, book_status, user_id, book_id)'
-        ' VALUES (?, ?, ?, ?);',
-        ("Newly added to database", "Available", 1, i)
+        'INSERT INTO book_log (datetime_log, remarks, book_status, user_id, book_id)'
+        ' VALUES (?, ?, ?, ?, ?);',
+        (datetime.now(), "Newly added to database", "Available", 1, i)
         )
 
 # # OTHER QUERIES
