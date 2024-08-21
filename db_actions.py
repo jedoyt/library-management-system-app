@@ -1,6 +1,7 @@
 import sqlite3, csv
 from datetime import datetime
 from pprint import pprint
+from app.book_log import convert_current_utc_dt
 
 c = sqlite3.connect(
             'instance/app_db.sqlite',
@@ -27,10 +28,12 @@ with open('library_catalogue.csv', newline='') as csvfile:
 
 # BULK INSERT ON book_log TABLE (INITIAL LOGS)
 for i in range(1,513):
+    # Convert from UTC to UTC+8:00
+    datetime_log = convert_current_utc_dt(delta_hour=8)
     c.execute(
         'INSERT INTO book_log (datetime_log, remarks, book_status, user_id, book_id)'
         ' VALUES (?, ?, ?, ?, ?);',
-        (datetime.now(), "Newly added to database", "Available", 1, i)
+        (datetime_log, "Newly added to database", "Available", 1, i)
         )
 
 # # OTHER QUERIES

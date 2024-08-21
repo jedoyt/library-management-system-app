@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -60,6 +60,15 @@ def last_book_log(book_id):
     print(f"Last Book Log: {dict(last_log)}")
     return last_log
 
+def convert_current_utc_dt(delta_hour):
+    # Convert string to datetime object
+    dt = datetime.now().astimezone(timezone.utc)
+    
+    # Apply timedelta to shift from UTC to UTC+<delta_hour>
+    utc_delta_hour = dt + timedelta(hours=delta_hour)
+
+    return utc_delta_hour
+
 @bp.route('/borrow/<int:book_id>', methods=('GET', 'POST'))
 @login_required
 def borrow_book(book_id):
@@ -71,11 +80,14 @@ def borrow_book(book_id):
     book_info = get_db().execute(
         "SELECT * FROM book WHERE id = ?", (book_id,)
     ).fetchone()
-        
+
+    # Convert from UTC to UTC+8:00
+    datetime_log = convert_current_utc_dt(delta_hour=8)
+
     db = get_db()
     db.execute(
         'INSERT INTO book_log (datetime_log, book_status, user_id, book_id) VALUES (?, ?, ?, ?)',
-        (datetime.now(), "Borrowed", session['user_id'], book_info['id'])
+        (datetime_log, "Borrowed", session['user_id'], book_info['id'])
     )
     db.commit()
     
@@ -92,6 +104,9 @@ def return_book(book_id):
     if last_log['user_id'] != session['user_id']:
         raise BadRequest
 
+    # Convert from UTC to UTC+8:00
+    datetime_log = convert_current_utc_dt(delta_hour=8)
+
     book_info = get_db().execute(
         "SELECT * FROM book WHERE id = ?", (book_id,)
     ).fetchone()
@@ -99,7 +114,7 @@ def return_book(book_id):
     db = get_db()
     db.execute(
         'INSERT INTO book_log (datetime_log, book_status, user_id, book_id) VALUES (?, ?, ?, ?)',
-        (datetime.now(), "Returned", session['user_id'], book_info['id'])
+        (datetime_log, "Returned", session['user_id'], book_info['id'])
     )
     db.commit()
     
@@ -114,7 +129,9 @@ def enter_log(book_id):
         "SELECT * FROM book WHERE id = ?", (book_id,)
     ).fetchone()
     if request.method == 'POST':
-        datetime_log = datetime.now()
+        # Convert from UTC to UTC+8:00
+        datetime_log = convert_current_utc_dt(delta_hour=8)
+        
         book_status = request.form['book_status']
         book_remarks = request.form['book_remarks']
         
