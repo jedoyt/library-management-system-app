@@ -11,8 +11,44 @@
         <div class="row text-center">
             <div class="col"><a class="btn btn-outline-secondary" href="#">Borrowed Books</a></div>
             <div class="col"><a class="btn btn-outline-dark" href="#">Returned Books</a></div>
-            <div class="col"><a class="btn btn-outline-primary" href="#">View User Accounts</a></div>
+            <div class="col"><a class="btn btn-outline-primary" href="{{ url_for('book_log.get_all_users') }}">View User Accounts</a></div>
         </div>
     </div>
 </div>
+<br>
+{% if users %}
+<div class="card" style="width: 56rem;">
+    <div class="card-header text-center">
+        User Accounts
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Email</td>
+                <td>Full Name</td>
+                <td>Contact Number</td>
+                <td>Role</td>
+                <td>Details Link</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{user['id']}}</td>
+                <td>{{user['email']}}</td>
+                <td>{{user['full_name']}}</td>
+                <td>{{user['contact_number']}}</td>
+                {% if user['library_staff'] %}
+                <td>Library Staff</td>
+                {% else %}
+                <td>Borrower</td>
+                {% endif %}
+                <td><a class="badge btn btn-primary" href="{{ url_for('auth.user_settings', user_id=user['id']) }}">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 {% endblock %}

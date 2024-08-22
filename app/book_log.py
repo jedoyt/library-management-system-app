@@ -184,8 +184,23 @@ def edit_log(log_id):
         book_status_list=book_status_list, badge=badge
         )
 
-@bp.route('/dashboard')
-def dashboard():
+@bp.route('/dashboard/users')
+@login_required
+def get_all_users():
+    # This page is only for library staff accounts
     if not g.user['library_staff']:
         raise Forbidden
+    users = get_db().execute(
+        'SELECT * FROM user;'
+    ).fetchall()
+
+    return render_template('book_log/dashboard.html', users=users)
+
+@bp.route('/dashboard')
+@login_required
+def dashboard():
+    # This page is only for library staff accounts
+    if not g.user['library_staff']:
+        raise Forbidden
+    
     return render_template('book_log/dashboard.html')

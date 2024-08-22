@@ -1,5 +1,10 @@
 import functools
 from app.objects import badge
+from werkzeug.exceptions import Unauthorized
+
+# This will help set the request.form object from immutable to mutable
+# so we can set a default value on the radio button
+from werkzeug.datastructures import MultiDict
 
 
 from flask import (
@@ -119,6 +124,19 @@ def login():
         flash(error)
     return render_template('auth/login.html')
 
+def login_required(view):
+    """
+    Require Authentication in Other Views
+    Creating, editing, and deleting blog posts will require a user to be logged in. 
+    This decorator can be used to check this for each view it’s applied to.
+    """
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        return view(**kwargs)
+    return wrapped_view
+
 @bp.before_app_request
 def load_logged_in_user():
     """
@@ -135,6 +153,7 @@ def load_logged_in_user():
         g.user = get_db().execute('SELECT * FROM user WHERE id = ?', (user_id,)).fetchone()
 
 @bp.route('/user/<int:user_id>', methods=('GET', 'POST'))
+@login_required
 def user_page(user_id):
     error = ""
     if request.method == 'POST':
@@ -201,17 +220,36 @@ def logout():
     session.clear()
     return redirect(url_for('book_log.index'))
 
-def login_required(view):
-    """
-    Require Authentication in Other Views
-    Creating, editing, and deleting blog posts will require a user to be logged in. 
-    This decorator can be used to check this for each view it’s applied to.
-    """
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
-        return view(**kwargs)
-    return wrapped_view
+@bp.route('/user_settings/<int:user_id>', methods=('GET', 'POST'))
+@login_required
+def user_settings(user_id):
+    # This page is only for library staff accounts
+    if not g.user['library_staff']:
+        raise Unauthorized
+    
+    # Load user details
+    user = get_db().execute(
+        'SELECT * FROM user WHERE id = ?', (user_id,)
+    ).fetchone()
+
+    if request.method == 'POST':
+        # Radio Button Input
+        role = request.form.get('roleRadio')
+
+        if role == "Library Staff":
+            library_staff = True
+        else:
+            library_staff = False
+
+        db = get_db()
+        db.execute(
+            'UPDATE user SET library_staff = ? WHERE id = ?',
+            (library_staff, user_id)
+            )
+        db.commit()
+
+        return redirect(url_for('book_log.get_all_users'))
+    
+    return render_template('/auth/user_settings.html', user=user)
 
 
