@@ -208,7 +208,12 @@ def get_all_borrowed():
 
     borrowed_list = [dict(row) for row in borrowed_books if row['book_status'] == "Borrowed"]
     for row in borrowed_list:
-        row['borrowed_days']= (datetime.now() - row['datetime_log']).days
+        try:
+            row['borrowed_days'] = (convert_current_utc_dt(delta_hour=8) - row['datetime_log']).days
+        except Exception as e:
+            print(f"{e}\nNow using datetime.datetime.now() as current time.")
+            row['borrowed_days'] = (datetime.now() - row['datetime_log']).days
+    # print(borrowed_list[0])    
 
     return render_template('book_log/dashboard.html', borrowed_books=borrowed_list)
 
