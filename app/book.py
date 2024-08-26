@@ -1,4 +1,3 @@
-import sqlite3
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -72,7 +71,7 @@ def new_books():
         raise Forbidden
 
     search_results = list()
-    search_results_header = f"Search Results"
+    search_results_header = "Search Results"
 
     if request.method == 'POST':
         title = request.form['book_title']

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
-from werkzeug.exceptions import abort, Unauthorized, BadRequest, Forbidden
+from werkzeug.exceptions import Unauthorized, BadRequest, Forbidden
 
 from app.auth import login_required
 from app.db import get_db
