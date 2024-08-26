@@ -6,7 +6,7 @@
 <div class="card mx-auto" style="width: 21rem;">
     <h6 class="card-header">
         <span class="badge text-bg-{{badge[log_info['book_status']]}}">{{ log_info['book_status'] }}</span>
-        <span class="badge text-bg-light">{{ log_info['datetime_log'] }}</span>
+        <span class="badge text-bg-light">{{ log_info['datetime_log'].strftime('%B %-d, %Y, %-I:%M %p') }}</span>
         <span class="badge text-bg-light">user: {{ log_info['full_name'] }}</span>
     </h6>
     <div class="card-body">

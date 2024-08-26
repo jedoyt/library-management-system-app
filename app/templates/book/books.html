@@ -42,8 +42,8 @@
 {% for book in search_results %}
 <div class="card mx-auto">
     <h6 class="card-header">
-        <span class="badge text-bg-{{badge[book['book_status']]}}">{{ book['book_status'] }}</span> |
-        <span class="badge text-bg-light">{{ book['MAX(datetime_log)'] }}</span><br>
+        <span class="badge text-bg-{{badge[book['book_status']]}}">{{ book['book_status'] }}</span> 
+        <span class="badge text-bg-light">{{ book['datetime_log'] }}</span><br>
         <span class="badge text-bg-light">user: {{ book['full_name'] }}</span>
     </h6>
     <div class="card-body">

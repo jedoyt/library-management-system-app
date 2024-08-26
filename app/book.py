@@ -208,20 +208,26 @@ def browse_books():
         category = request.form['book_category']
 
         search_results = get_db().execute(
-            'SELECT book_log.id, MAX(datetime_log), book_status, user_id, book_id, full_name, title, author, category'
+            'SELECT MAX(book_log.id), datetime_log, book_status, user_id, book_id, full_name, title, author, category'
             ' FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id'
             ' WHERE title LIKE "%" || ? || "%"'
             ' AND author LIKE "%" || ? || "%"'
             ' AND category LIKE "%" || ? || "%"'
             ' GROUP BY book_id'
-            ' ORDER BY MAX(datetime_log) DESC', (title, author, category)
+            ' ORDER BY MAX(book_log.id) DESC', (title, author, category)
         ).fetchall()
         
         search_results_header = f"Search results for Title: '{title}' Author: '{author}' Category: '{category}'"
 
         if search_results:
             # Convert SQLite Row objects to dictionaries
-            results = [dict(row) for row in search_results]
+            # Limit search results to 50 hits
+            results = [dict(row) for row in search_results][:50]
+
+            #Format datetime object
+            for row in results:
+                row['datetime_log'] = row['datetime_log'].strftime('%B %-d, %Y %-I:%M %p')
+
             # Store the search results in the session
             session['results'] = results
             session['results_header'] = search_results_header

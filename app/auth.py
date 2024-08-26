@@ -192,12 +192,12 @@ def user_page(user_id):
             ' ORDER BY datetime_log DESC', (user_id,)
         ).fetchall()
         
-        session['user_logs'] = [dict(log) for log in user_logs]
+        session['user_logs'] = [dict(log) for log in user_logs][:50]
         # Paginate the search results
         page = request.args.get('page', 1, type=int)
         per_page = 5
-        paginated_results = paginate_results(session['user_logs'], page, per_page)
-        total_pages = len(session['user_logs']) // per_page + (len(session['user_logs']) % per_page > 0)
+        paginated_results = paginate_results(session.get('user_logs'), page, per_page)
+        total_pages = len(session['user_logs']) // per_page + (len(session.get('user_logs')) % per_page > 0)
 
         return render_template(
             'auth/user_page.html', error=error, user_logs=paginated_results,

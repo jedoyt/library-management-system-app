@@ -184,6 +184,51 @@ def edit_log(log_id):
         book_status_list=book_status_list, badge=badge
         )
 
+@bp.route('/dashboard')
+@login_required
+def dashboard():
+    # This page is only for library staff accounts
+    if not g.user['library_staff']:
+        raise Forbidden
+    
+    return render_template('book_log/dashboard.html')
+
+@bp.route('/dashboard/borrowed')
+@login_required
+def get_all_borrowed():
+    # This page is only for library staff accounts
+    if not g.user['library_staff']:
+        raise Forbidden
+    borrowed_books = get_db().execute(
+        'SELECT MAX(book_log.id), book_status, datetime_log, book_id, title, author, category, user_id, full_name, email, contact_number'
+        ' FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id'
+        ' GROUP BY book_id'
+        ' ORDER BY MAX(book_log.id)'
+    ).fetchall()
+
+    borrowed_list = [dict(row) for row in borrowed_books if row['book_status'] == "Borrowed"]
+    for row in borrowed_list:
+        row['borrowed_days']= (datetime.now() - row['datetime_log']).days
+
+    return render_template('book_log/dashboard.html', borrowed_books=borrowed_list)
+
+@bp.route('/dashboard/returned')
+@login_required
+def get_all_returned():
+    # This page is only for library staff accounts
+    if not g.user['library_staff']:
+        raise Forbidden
+    returned_books = get_db().execute(
+        'SELECT MAX(book_log.id), book_status, datetime_log, book_id, title, author, category, user_id, full_name, email, contact_number'
+        ' FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id'
+        ' GROUP BY book_id'
+        ' ORDER BY MAX(book_log.id) ASC'
+    ).fetchall()
+
+    returned_list = [dict(row) for row in returned_books if row['book_status'] == "Returned"]
+
+    return render_template('book_log/dashboard.html', returned_books=returned_list)
+
 @bp.route('/dashboard/users')
 @login_required
 def get_all_users():
@@ -195,12 +240,3 @@ def get_all_users():
     ).fetchall()
 
     return render_template('book_log/dashboard.html', users=users)
-
-@bp.route('/dashboard')
-@login_required
-def dashboard():
-    # This page is only for library staff accounts
-    if not g.user['library_staff']:
-        raise Forbidden
-    
-    return render_template('book_log/dashboard.html')

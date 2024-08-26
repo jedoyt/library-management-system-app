@@ -3,19 +3,88 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="card mx-auto">
+<div class="card" style="width: 36rem;">
     <div class="card-header text-center">
         Librarian's Dashboard
     </div>
     <div class="card-body">
-        <div class="row text-center">
-            <div class="col"><a class="btn btn-outline-secondary" href="#">Borrowed Books</a></div>
-            <div class="col"><a class="btn btn-outline-dark" href="#">Returned Books</a></div>
-            <div class="col"><a class="btn btn-outline-primary" href="{{ url_for('book_log.get_all_users') }}">View User Accounts</a></div>
-        </div>
+        <span class="container-fluid"><a class="btn btn-outline-secondary"
+                href="{{ url_for('book_log.get_all_borrowed') }}">Borrowed Books</a></span>
+        <span class="container-fluid"><a class="btn btn-outline-dark"
+                href="{{ url_for('book_log.get_all_returned') }}">Returned Books</a></span>
+        <span class="container-fluid"><a class="btn btn-outline-primary"
+                href="{{ url_for('book_log.get_all_users') }}">View User Accounts</a></span>
     </div>
 </div>
+
 <br>
+{% if borrowed_books %}
+<div class="card" style="width: 56rem;">
+    <div class="card-header text-center">
+        Currently Borrowed Books
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td>Date & Time</td>
+                <td>Book Title, Author</td>
+                <td>Borrower, Email</td>
+                <td>Contact Number</td>
+                <td>Borrowed Days</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in borrowed_books %}
+            {% if book['book_status'] == "Borrowed" %}
+            <tr>
+                <td>{{book['datetime_log'].strftime('%m/%d/%Y %-I:%M %p')}}</td>
+                <td><a href="{{ url_for('book.view_book_details', book_id=book['book_id']) }}">{{book['title']}}, <br>
+                        {{book['author']}}</a></td>
+                <td><a href="{{ url_for('auth.user_settings', user_id=book['user_id']) }}">{{book['full_name']}}, <br>
+                        {{book['email']}}</a></td>
+                <td>{{book['contact_number']}}</td>
+                <td class="text-center">{{book['borrowed_days']}}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% if returned_books %}
+<div class="card" style="width: 56rem;">
+    <div class="card-header text-center">
+        Returned Books
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td>Date & Time</td>
+                <td>Book Title, Author</td>
+                <td>Borrower, Email</td>
+                <td>Contact Number</td>
+                <td>Log Link</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in returned_books %}
+            {% if book['book_status'] == "Returned" %}
+            <tr>
+                <td>{{book['datetime_log'].strftime('%m/%d/%Y %-I:%M %p')}}</td>
+                <td><a href="{{ url_for('book.view_book_details', book_id=book['book_id']) }}">{{book['title']}}, <br>
+                        {{book['author']}}</a></td>
+                <td><a href="{{ url_for('auth.user_settings', user_id=book['user_id']) }}">{{book['full_name']}}, <br>
+                        {{book['email']}}</a></td>
+                <td>{{book['contact_number']}}</td>
+                <td><a class="badge btn btn-primary"
+                        href="{{ url_for('book_log.enter_log', book_id=book['user_id']) }}">Enter Log</a></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 {% if users %}
 <div class="card" style="width: 56rem;">
     <div class="card-header text-center">
@@ -44,7 +113,8 @@
                 {% else %}
                 <td>Borrower</td>
                 {% endif %}
-                <td><a class="badge btn btn-primary" href="{{ url_for('auth.user_settings', user_id=user['id']) }}">View</a></td>
+                <td><a class="badge btn btn-primary"
+                        href="{{ url_for('auth.user_settings', user_id=user['id']) }}">View</a></td>
             </tr>
             {% endfor %}
         </tbody>
