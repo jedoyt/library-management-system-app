@@ -207,7 +207,7 @@ def browse_books():
         category = request.form['book_category']
 
         search_results = get_db().execute(
-            'SELECT MAX(book_log.id), datetime_log, book_status, user_id, book_id, full_name, title, author, category'
+            'SELECT MAX(book_log.id), datetime_log, remarks, book_status, user_id, book_id, full_name, title, author, category'
             ' FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id'
             ' WHERE title LIKE "%" || ? || "%"'
             ' AND author LIKE "%" || ? || "%"'
@@ -221,7 +221,7 @@ def browse_books():
         if search_results:
             # Convert SQLite Row objects to dictionaries
             # Limit search results to 50 hits
-            results = [dict(row) for row in search_results][:50]
+            results = [dict(row) for row in search_results][:100]
 
             #Format datetime object
             for row in results:
