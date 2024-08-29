@@ -3,6 +3,160 @@
 {% block title %}Main{% endblock %}
 
 {% block content %}
+{% if g.user %}
+<div class="card mx-auto">
+    <div class="card-body">
+        <h5 class="card-title text-center">Welcome to Pilgrim Church Library App</h5>
+        <h6 class="card-subtitle text-center"><small>Tap the buttons for a quick guide</small></h6>
+        <hr>
+        <p class="d-inline-flex gap-1">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#guideCollapse1"
+                aria-expanded="false" aria-controls="collapseExample" style="width: 21rem;">
+                <strong>Searching for a book?</strong>
+            </button>
+        </p>
+        <div class="collapse" id="guideCollapse1">
+            <div class="card card-body">
+                <p class="card-text">
+                    <small>
+                        To browse for books, click the "Menu" dropdown on the top navigation bar to see the "Browse Books" link. 
+                    </small>
+                </p>
+                <p class="card-text">
+                    <small> 
+                        If you're logged-in on your mobile device, tap first the navbar's 'hamburger icon' on the top-right to 
+                         make the links appear-- including the "Menu" dropdown.
+                    </small>
+                </p>
+                <p class="card-text">
+                    <small>
+                        Input the necessary keywords on book title or author or category and then tap Search.
+                    </small>
+                </p>
+                <p class="card-text">
+                    <small>
+                        Click the "View Details" button on the book your interested to borrow. 
+                        However, don't tap the "Borrow" button yet without first personally notifiying 
+                        at least one of our church librarians: <strong>Gerard Pelaez</strong>, 
+                        <strong>Chrystal Kaharian</strong> 
+                    </small>
+                </p>
+            </div>
+        </div>
+        <br>
+        <p class="d-inline-flex gap-1">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#guideCollapse2"
+                aria-expanded="false" aria-controls="collapseExample" style="width: 21rem;">
+                <strong>Found a book to borrow?</strong>
+            </button>
+        </p>
+        <div class="collapse" id="guideCollapse2">
+            <div class="card card-body">
+                <p class="card-text">
+                    <small>
+                        Before borrowing any book and tapping the "Borrow" button on the app, kindly approach first any of our 
+                        church librarians --<strong>Gerard Pelaez</strong> and <strong>Chrystal Kaharian</strong>, to be personally notified. Preferrably during Lord's Day.
+                    </small>
+                </p>
+            </div>
+        </div>
+        <br>
+        <p class="d-inline-flex gap-1">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#guideCollapse3"
+                aria-expanded="false" aria-controls="collapseExample" style="width: 21rem;">
+                <strong>Who can borrow?</strong>
+            </button>
+        </p>
+        <div class="collapse" id="guideCollapse3">
+            <div class="card card-body">
+                <p class="card-text">
+                    <small>
+                        The members of Pilgrim Community Church are the primary target borrowers of our library.
+                        We originally intended the book borrowing also exclusive for church members.
+                        However, we can still to allow the borrowing by non-members only if an active church member 
+                        can vouch for the person.
+                    </small>
+                </p>
+                <p class="card-text">
+                    <small>
+                        The "Borrow" logging of the book should be transacted by a church member's user account. 
+                        We'll just note on the remarks who the actual borrower of the book is.
+                    </small>
+                </p>
+                <p class="card-text">
+                    <small>
+                        Our members are expected to handle the borrowed book with care and be responsible for
+                        its safekeeping while away from our church library. The borrower should shoulder the 
+                        necessary rectification or replacement on and of the book in case of any damages or, 
+                        at worst, having the book lost while the item was on borrower's hand
+                    </small>
+                </p>
+            </div>
+        </div>
+        <br>
+        <p class="d-inline-flex gap-1">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#guideCollapse4"
+                aria-expanded="false" aria-controls="collapseExample" style="width: 21rem;">
+                <strong>Can any type of book be borrowed?</strong>
+            </button>
+        </p>
+        <div class="collapse" id="guideCollapse4">
+            <div class="card card-body">
+                <p class="card-text">
+                    <small>
+                        Books tagged as <span class="badge text-bg-success">Available</span>
+                        can be borrowed. All other badge tags such as 
+                        <span class="badge text-bg-warning">Borrowed</span>, <span class="badge text-bg-info">Returned</span>, etc. are, of course, not available for borrowing.
+                    </small>
+                </p>
+                <p class="card-text">
+                    <small>
+                        Books tagged as <span class="badge text-bg-light">Unavailable</span> are those that are for "room-reading only" and not available
+                        for borrowing. <br>(We've also tagged a few books as "Unavailable" that are no longer part
+                        of our library.)
+                    </small>
+                </p>
+            </div>
+        </div>
+        <br>
+        <p class="d-inline-flex gap-1">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#guideCollapse5"
+                aria-expanded="false" aria-controls="collapseExample" style="width: 21rem;">
+                <strong>How many books can I borrow?</strong>
+            </button>
+        </p>
+        <div class="collapse" id="guideCollapse5">
+            <div class="card card-body">
+                <p class="card-text">
+                    <small>
+                        For now, we'll limit the number of books that a member can borrow and have in-hand to just one (1) book.
+                    </small>
+                </p>
+            </div>
+        </div>
+        <br>
+        <p class="d-inline-flex gap-1">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#guideCollapse6"
+                aria-expanded="false" aria-controls="collapseExample" style="width: 21rem;">
+                <strong>How long can I have the book borrowed?</strong>
+            </button>
+        </p>
+        <div class="collapse" id="guideCollapse6">
+            <div class="card card-body">
+                <p class="card-text">
+                    <small>
+                        For now, the member can have the book borrowed for one week (7 calendar days).
+                        After that, we expect the book to be returned personally to any of our librarian 
+                        (Preferrably during Lord's Day).
+                    </small>
+                </p>
+            </div>
+        </div>
+        <br>
+    </div>
+</div>
+<br>
+{% endif %}
 <div class="card mx-auto">
     <div class="card-body">
         <h5 class="card-title text-center">Books Log Feed</h5>
