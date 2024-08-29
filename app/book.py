@@ -233,7 +233,7 @@ def browse_books():
             return redirect(url_for('book.browse_books'))
         else:
             # No results found
-            return (render_template('book/books.html', search_results_header="No results found!"))
+            return render_template('book/books.html', search_results_header="No results found!", categories=categories)
     else:
         # Retrieve the search results from the session, if any
         results = session.get('results')
@@ -251,7 +251,7 @@ def browse_books():
             )
         else:
             # Render the initial search page
-            return render_template('book/books.html')
+            return render_template('book/books.html', categories=categories)
 
 @bp.route('/delete/<int:book_id>', methods=('GET', 'POST'))
 @login_required
