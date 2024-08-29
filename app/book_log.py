@@ -57,15 +57,17 @@ def last_book_log(book_id):
         " GROUP BY book_id"
         " ORDER BY MAX(book_log.id) DESC;", (book_id,)
     ).fetchone()
-    print(f"Last Book Log: {dict(last_log)}")
+    # print(f"Last Book Log: {dict(last_log)}")
     return last_log
 
 def convert_current_utc_dt(delta_hour):
     # Convert string to datetime object
     dt = datetime.now().astimezone(timezone.utc)
+    dt_strf = dt.strftime("%d/%m/%Y, %H:%M:%S")
+    dt_strp = datetime.strptime(dt_strf, "%d/%m/%Y, %H:%M:%S")
     
     # Apply timedelta to shift from UTC to UTC+<delta_hour>
-    utc_delta_hour = dt + timedelta(hours=delta_hour)
+    utc_delta_hour = dt_strp + timedelta(hours=delta_hour)
 
     return utc_delta_hour
 
@@ -207,12 +209,15 @@ def get_all_borrowed():
     ).fetchall()
 
     borrowed_list = [dict(row) for row in borrowed_books if row['book_status'] == "Borrowed"]
+    print(borrowed_list)
     for row in borrowed_list:
-        try:
-            row['borrowed_days'] = (convert_current_utc_dt(delta_hour=8) - row['datetime_log']).days
-        except Exception as e:
-            print(f"{e}\nNow using datetime.datetime.now() as current time.")
-            row['borrowed_days'] = (datetime.now() - row['datetime_log']).days
+        print(f"datetime_log: {row['datetime_log']} | datatype: {type(row['datetime_log'])}")
+        row['borrowed_days'] = (convert_current_utc_dt(delta_hour=8) - row['datetime_log']).days
+        # try:
+        #     row['borrowed_days'] = (convert_current_utc_dt(delta_hour=8) - row['datetime_log']).days
+        # except Exception as e:
+        #     # print(f"{e}\nNow using datetime.datetime.now() as current time.")
+        #     row['borrowed_days'] = (datetime.now() - row['datetime_log']).days
     # print(borrowed_list[0])    
 
     return render_template('book_log/dashboard.html', borrowed_books=borrowed_list)

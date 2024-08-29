@@ -2,10 +2,6 @@ import functools
 from app.objects import badge
 from werkzeug.exceptions import Unauthorized
 
-# This will help set the request.form object from immutable to mutable
-# so we can set a default value on the radio button
-from werkzeug.datastructures import MultiDict
-
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
@@ -47,7 +43,7 @@ def register():
                 )
                 db.commit()
             except db.IntegrityError:
-                error = f"Email is already registered."
+                error = "Email is already registered."
                 session['registration_error'] = error
                 return render_template('auth/register.html', error=session['registration_error'])
             else:
@@ -87,7 +83,7 @@ def register_staff():
                 )
                 db.commit()
             except db.IntegrityError:
-                error = f"Email is already registered."
+                error = "Email is already registered."
                 session['registration_error'] = error
                 return render_template('auth/register_staff.html', error=session['registration_error'])
             else:
@@ -155,6 +151,8 @@ def load_logged_in_user():
 @bp.route('/user/<int:user_id>', methods=('GET', 'POST'))
 @login_required
 def user_page(user_id):
+    if session['user_id'] != user_id:
+        raise Unauthorized
     error = ""
     if request.method == 'POST':
         db = get_db()

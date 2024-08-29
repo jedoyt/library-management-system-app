@@ -35,7 +35,7 @@ def add_book():
             if not form_field:
                 error = f"{detail} is required."
         
-        print(f"[add_book] Captured form entries: {request.form}")
+        # print(f"[add_book] Captured form entries: {request.form}")
         if error is not None:
             flash(error)
         else:
@@ -48,14 +48,6 @@ def add_book():
                  nullables_dict['EAN_ISBN13'], nullables_dict['UPC_ISBN10'], nullables_dict['Book_Desc'], nullables_dict['Publisher'], 
                  nullables_dict['Date_Published'], nullables_dict['Date_Added'], nullables_dict['Pages'])
             )
-            recent_id = db.execute(
-                "SELECT MAX(id) FROM book;"
-            ).fetchone()
-            print(f"Recent ID: {recent_id}")
-            db.commit()
-            
-            # Create first log of newly added book
-            # log_new_book(book_id=recent_id)
             
             return redirect(url_for('book.new_books'))
     
@@ -84,7 +76,7 @@ def new_books():
             ' AND author LIKE "%" || ? || "%"'
             ' AND category LIKE "%" || ? || "%"', (title, author, category)
         ).fetchall()
-        print([(book['title'], book['author'], book['category']) for book in search_results])
+        # print([(book['title'], book['author'], book['category']) for book in search_results])
 
         search_results_header = f"Search Results for Title:'{title}' Author:'{author}' Category:'{category}'"
 
@@ -162,7 +154,7 @@ def edit_book_details(book_id):
             if not form_field:
                 error = f"{detail} is required."
 
-        print(f"[edit_book_details] Captured form entries: {request.form}")
+        # print(f"[edit_book_details] Captured form entries: {request.form}")
 
         # if no date inputs
         if request.form['date_published'] == "":
@@ -221,7 +213,7 @@ def browse_books():
         if search_results:
             # Convert SQLite Row objects to dictionaries
             # Limit search results to 50 hits
-            results = [dict(row) for row in search_results][:100]
+            results = [dict(row) for row in search_results][:50]
 
             #Format datetime object
             for row in results:
