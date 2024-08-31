@@ -149,7 +149,7 @@ def enter_log(book_id):
                 (datetime_log, book_remarks, book_status, g.user['id'], book_info['id'])
             )
             db.commit()
-            return redirect(url_for('book_log.index'))
+            return redirect(url_for('book.browse_books'))
 
     return render_template('book_log/log_entry.html', book_info=book_info, book_status_list=book_status_list)
 
