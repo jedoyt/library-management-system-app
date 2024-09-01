@@ -48,6 +48,7 @@ def add_book():
                  nullables_dict['EAN_ISBN13'], nullables_dict['UPC_ISBN10'], nullables_dict['Book_Desc'], nullables_dict['Publisher'], 
                  nullables_dict['Date_Published'], nullables_dict['Date_Added'], nullables_dict['Pages'])
             )
+            db.commit()
             
             return redirect(url_for('book.new_books'))
     
