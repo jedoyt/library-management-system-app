@@ -78,8 +78,7 @@ ORDER BY MAX(book_log.id) ASC
 '''
 
 fetched_items = c.execute(
-    query, 
-    ("Returned",)
+    "SELECT * FROM book;"
     )
 all_items = fetched_items.fetchall()
 # print(all_items)
