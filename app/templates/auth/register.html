@@ -12,12 +12,18 @@
         <form method="post">
             <div class="mb-3">
                 <label for="InputEmail" class="form-label"></label>
-                <input name="email" type="email" class="form-control" id="InputEmail" placeholder="Email Address (required)" required>
+                <input name="email" type="email" class="form-control" id="InputEmail"
+                    placeholder="Email Address (required)" required>
                 <div class="invalid-feedback">This field is required.</div>
             </div>
             <div class="mb-3">
-                <input name="password" type="password" class="form-control" placeholder="Password (required)" required>
+                <input name="password" type="password" class="form-control" placeholder="Password (required)"
+                    id="inputPassword" required>
                 <div class="invalid-feedback">This field is required.</div>
+            </div>
+            <div class="mb-3">
+                <input type="checkbox" class="form-check-input" id="toggle-password">
+                <label class="form-check-label" for="toggle-password">Show password</label>
             </div>
             <div class="mb-3">
                 <input name="full_name" type="text" class="form-control" placeholder="Full Name (required)" required>
@@ -31,4 +37,15 @@
         </form>
     </div>
 </div>
+<script>
+    document.getElementById('toggle-password').addEventListener('click', function () {
+        var passwordField = document.getElementById('inputPassword');
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+        } else {
+            passwordField.type = 'password';
+        }
+    });
+</script>
+
 {% endblock %}
