@@ -216,7 +216,7 @@ def logout():
     Then load_logged_in_user won’t load a user on subsequent requests.
     """
     session.clear()
-    return redirect(url_for('book_log.index'))
+    return redirect(url_for('auth.login'))
 
 @bp.route('/user_settings/<int:user_id>', methods=('GET', 'POST'))
 @login_required
@@ -248,6 +248,38 @@ def user_settings(user_id):
 
         return redirect(url_for('book_log.get_all_users'))
     
-    return render_template('/auth/user_settings.html', user=user)
+    return render_template('/auth/user_settings.html', user=user, user_id=user_id)
 
+@bp.route('/change_password/<int:user_id>', methods=('GET', 'POST'))
+@login_required
+def change_password(user_id):
+    if session['user_id'] != user_id:
+        raise Unauthorized
+    error = ""
+    session['change_pw_status'] = error
+    # Load user details
+    user_password_hash = get_db().execute(
+        'SELECT user_password FROM user WHERE id = ?', (user_id,)
+    ).fetchone()['user_password']
+
+    if request.method == 'POST':
+        error = "Password changed successfully!"
+        return render_template('auth/change_password.html', user_password_hash=user_password_hash, error=error)
+    
+    return render_template('auth/change_password.html', user_password_hash=user_password_hash, error=error)
+
+@bp.route('/reset_password/<int:user_id>')
+def reset_password(user_id):
+    # This page is only for library staff accounts
+    if not g.user['library_staff']:
+        raise Unauthorized
+    password = 'pilgrimchurchlibrary'
+
+    db = get_db()
+    db.execute(
+        "UPDATE user SET user_password = ? WHERE id = ?;", 
+        (generate_password_hash(password), user_id),
+    )
+    db.commit()
+    return redirect(url_for('auth.user_settings', user_id=user_id))
 

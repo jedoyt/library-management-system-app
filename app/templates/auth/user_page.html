@@ -30,8 +30,11 @@
                     id="InputContact">{{ g.user['contact_number'] }}</textarea>
             </div>
             <hr>
-            <div class="text-center"><input type="submit" class="btn btn-secondary" value="Update"></div>
+            <div class="mb-4 text-center"><input type="submit" class="btn btn-secondary" value="Update"></div>
         </form>
+        <div class="mb-3 text-center">
+            <a class="card-link" href="{{ url_for('auth.change_password', user_id=session['user_id']) }}">Need to change password?</a>
+        </div>
     </div>
 </div>
 <br>
