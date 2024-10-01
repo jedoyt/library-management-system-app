@@ -263,8 +263,21 @@ def change_password(user_id):
     ).fetchone()['user_password']
 
     if request.method == 'POST':
-        error = "Password changed successfully!"
-        return render_template('auth/change_password.html', user_password_hash=user_password_hash, error=error)
+        old_password = request.form['oldpassword']
+        new_password = request.form['newpassword']
+        if old_password and new_password:
+            if check_password_hash(user_password_hash, old_password):
+                db = get_db()
+                db.execute(
+                    "UPDATE user SET user_password = ? WHERE id = ?;",
+                    (generate_password_hash(new_password), user_id)
+                )
+                db.commit()
+                error = "Password changed successfully!"
+                return render_template('auth/change_password.html', user_password_hash=user_password_hash, error=error)
+            else:
+                error = "Incorrect old password!"
+                return render_template('auth/change_password.html', user_password_hash=user_password_hash, error=error)
     
     return render_template('auth/change_password.html', user_password_hash=user_password_hash, error=error)
 
