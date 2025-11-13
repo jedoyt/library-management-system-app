@@ -230,6 +230,21 @@ def user_settings(user_id):
         'SELECT * FROM user WHERE id = ?', (user_id,)
     ).fetchone()
 
+    # Display user logs
+    user_logs = get_db().execute(
+            'SELECT book_log.id, datetime_log, book_status, user_id, book_id, full_name, title, author, category'
+            ' FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id'
+            ' WHERE user_id = ?'
+            ' ORDER BY datetime_log DESC', (user_id,)
+        ).fetchall()
+        
+    session['user_logs'] = [dict(log) for log in user_logs][:50]
+    # Paginate the user logs
+    page = request.args.get('page', 1, type=int)
+    per_page = 5
+    paginated_results = paginate_results(session.get('user_logs'), page, per_page)
+    total_pages = len(session['user_logs']) // per_page + (len(session.get('user_logs')) % per_page > 0)
+
     if request.method == 'POST':
         # Radio Button Input
         role = request.form.get('roleRadio')
@@ -248,7 +263,10 @@ def user_settings(user_id):
 
         return redirect(url_for('book_log.get_all_users'))
     
-    return render_template('/auth/user_settings.html', user=user, user_id=user_id)
+    return render_template(
+        '/auth/user_settings.html', user=user, user_id=user_id, user_logs=paginated_results,
+        badge=badge, total_pages=total_pages, current_page=page
+        )
 
 @bp.route('/change_password/<int:user_id>', methods=('GET', 'POST'))
 @login_required

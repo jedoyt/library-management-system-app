@@ -80,4 +80,56 @@
         </div>
     </div>
 </div>
+<br>
+<div class="card mx-auto">
+    <div class="card-body">
+        <h5 class="card-title text-center">User Logs</h5>
+    </div>
+</div>
+<br>
+{% for log in user_logs %}
+<div class="card mx-auto">
+    <div class="card-header">
+        <h6 class="card-subtitle">
+            <span class="badge text-bg-{{badge[log['book_status']]}}">{{ log['book_status'] }}</span> 
+            <span class="badge text-bg-light">{{ log['datetime_log'] }}</span>
+        </h6>
+    </div>
+    <div class="card-body">
+        <p class="card-text">{{ log['title'] }} ({{ log['author'] }}) </p>
+        <p class="card-text">user: {{ log['full_name'] }}</p>
+        <p class="card-text">Remarks/Comments:<br><small>{{ log['remarks'] }}</small></p>
+        <a class="btn btn-outline-secondary" href="{{ url_for('book.view_book_details', book_id=log['book_id']) }}">View Book Details</a>
+        {% if g.user['library_staff'] %}
+        <a class="btn btn-info" href="{{ url_for('book_log.edit_log', log_id=log['id']) }}">Edit this log</a>
+        {% endif %}
+    </div>
+</div>
+<div class="container-fluid">
+    <hr>
+</div>
+{% endfor %}
+<br>
+<div class="container-fluid mx-auto">
+    {% if total_pages > 1 %}
+    <ul class="pagination">
+        {% if current_page > 1 %}
+        <li class="page-item"><a class="page-link" href="/auth/user_settings/{{ session['user_id'] }}?page=1">First</a></li>
+        <li class="page-item"><a class="page-link" href="/auth/user_settings/{{ session['user_id'] }}?page-={{ current_page - 1 }}">Previous</a></li>
+        {% endif %}
+        <li class="page-item"><span class="page-link disabled"> Page {{ current_page }} of {{ total_pages }} </span></li>
+        <!-- {% for i in range(1, total_pages + 1) %}
+            {% if i == current_page %}
+            <li class="page-item"><span class="page-link disabled"> {{ i }} </span></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="/books?page={{ i }}"> {{ i }} </a></li>
+            {% endif %}
+        {% endfor %} -->
+        {% if current_page < total_pages %}
+        <li class="page-item"><a class="page-link" href="/auth/user_settings/{{ session['user_id'] }}?page={{ current_page + 1 }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="/auth/user_settings/{{ session['user_id'] }}?page={{ total_pages }}">Last</a></li>
+        {% endif %}
+    </ul>
+    {% endif %}
+</div>
 {% endblock %}
