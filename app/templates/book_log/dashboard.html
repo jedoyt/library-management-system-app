@@ -3,7 +3,8 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="card" style="width: 36rem;">
+<!--Aligned div card to center of page-->
+<div class="card mx-auto" style="width: 36rem;">
     <div class="card-header text-center">
         Librarian's Dashboard
     </div>
@@ -19,7 +20,7 @@
 
 <br>
 {% if borrowed_books %}
-<div class="card" style="width: 56rem;">
+<div class="card mx-auto" style="width: 36rem;">
     <div class="card-header text-center">
         Currently Borrowed Books
     </div>
@@ -29,7 +30,7 @@
                 <td>Date & Time</td>
                 <td>Book Title, Author</td>
                 <td>Borrower, Email</td>
-                <td>Contact Number</td>
+                <!-- <td>Contact Number</td> -->
                 <td>Days Borrowed</td>
             </tr>
         </thead>
@@ -42,7 +43,7 @@
                         {{book['author']}}</a></td>
                 <td><a href="{{ url_for('auth.user_settings', user_id=book['user_id']) }}">{{book['full_name']}}, <br>
                         {{book['email']}}</a></td>
-                <td>{{book['contact_number']}}</td>
+                <!-- <td>{{book['contact_number']}}</td> -->
                 <td class="text-center">{{book['borrowed_days']}}</td>
             </tr>
             {% endif %}
@@ -52,7 +53,7 @@
 </div>
 {% endif %}
 {% if returned_books %}
-<div class="card" style="width: 56rem;">
+<div class="card mx-auto" style="width: 36rem;">
     <div class="card-header text-center">
         Returned Books
     </div>
@@ -62,7 +63,7 @@
                 <td>Date & Time</td>
                 <td>Book Title, Author</td>
                 <td>Borrower, Email</td>
-                <td>Contact Number</td>
+                <!-- <td>Contact Number</td> -->
                 <td>Log Link</td>
             </tr>
         </thead>
@@ -75,7 +76,7 @@
                         {{book['author']}}</a></td>
                 <td><a href="{{ url_for('auth.user_settings', user_id=book['user_id']) }}">{{book['full_name']}}, <br>
                         {{book['email']}}</a></td>
-                <td>{{book['contact_number']}}</td>
+                <!-- <td>{{book['contact_number']}}</td> -->
                 <td><a class="badge btn btn-primary"
                         href="{{ url_for('book_log.enter_log', book_id=book['book_id']) }}">Enter Log</a></td>
             </tr>
@@ -86,7 +87,7 @@
 </div>
 {% endif %}
 {% if users %}
-<div class="card" style="width: 56rem;">
+<div class="card mx-auto" style="width: 36rem;">
     <div class="card-header text-center">
         User Accounts
     </div>
@@ -96,7 +97,7 @@
                 <td>ID</td>
                 <td>Email</td>
                 <td>Full Name</td>
-                <td>Contact Number</td>
+                <!-- <td>Contact Number</td> -->
                 <td>Role</td>
                 <td>Details Link</td>
             </tr>
@@ -107,7 +108,7 @@
                 <td>{{user['id']}}</td>
                 <td>{{user['email']}}</td>
                 <td>{{user['full_name']}}</td>
-                <td>{{user['contact_number']}}</td>
+                <!-- <td>{{user['contact_number']}}</td> -->
                 {% if user['library_staff'] %}
                 <td>Library Staff</td>
                 {% else %}

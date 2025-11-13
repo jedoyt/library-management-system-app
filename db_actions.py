@@ -69,16 +69,21 @@ c.row_factory = sqlite3.Row
 # AND category LIKE "%" || ? || "%"
 # '''
 
+# query = '''
+# SELECT MAX(book_log.id), book_status, datetime_log, book_id, title, author, category, user_id, full_name, email, contact_number
+# FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id
+# WHERE book_status = ?
+# GROUP BY book_id
+# ORDER BY MAX(book_log.id) ASC
+# '''
+
+# Set first registered user libarry_staff to True
 query = '''
-SELECT MAX(book_log.id), book_status, datetime_log, book_id, title, author, category, user_id, full_name, email, contact_number
-FROM book_log JOIN user ON book_log.user_id = user.id JOIN book ON book_log.book_id = book.id
-WHERE book_status = ?
-GROUP BY book_id
-ORDER BY MAX(book_log.id) ASC
+UPDATE user SET library_staff = 1 WHERE id = 1;
 '''
 
 fetched_items = c.execute(
-    "SELECT * FROM book;"
+    "SELECT * from user;"
     )
 all_items = fetched_items.fetchall()
 # print(all_items)
