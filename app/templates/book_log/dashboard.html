@@ -4,32 +4,33 @@
 
 {% block content %}
 <!--Aligned div card to center of page-->
-<div class="card mx-auto" style="width: 36rem;">
+<div class="card mx-auto">
     <div class="card-header text-center">
         Librarian's Dashboard
     </div>
-    <div class="card-body">
+    <div class="card-body mx-auto">
         <span class="container-fluid"><a class="btn btn-outline-secondary"
-                href="{{ url_for('book_log.get_all_borrowed') }}">Borrowed Books</a></span>
+                href="{{ url_for('book_log.get_all_borrowed') }}">Borrowed<br>Books</a></span>
         <span class="container-fluid"><a class="btn btn-outline-dark"
-                href="{{ url_for('book_log.get_all_returned') }}">Returned Books</a></span>
+                href="{{ url_for('book_log.get_all_returned') }}">Returned<br>Books</a></span>
         <span class="container-fluid"><a class="btn btn-outline-primary"
-                href="{{ url_for('book_log.get_all_users') }}">View User Accounts</a></span>
+                href="{{ url_for('book_log.get_all_users') }}">View User<br>Accounts</a></span>
     </div>
 </div>
 
 <br>
 {% if borrowed_books %}
-<div class="card mx-auto" style="width: 36rem;">
+<div class="card mx-auto">
     <div class="card-header text-center">
         Currently Borrowed Books
     </div>
+    <small>
     <table class="table table-hover">
         <thead>
             <tr>
                 <td>Date & Time</td>
                 <td>Book Title, Author</td>
-                <td>Borrower, Email</td>
+                <td>Borrower</td>
                 <!-- <td>Contact Number</td> -->
                 <td>Days Borrowed</td>
             </tr>
@@ -41,8 +42,7 @@
                 <td>{{book['datetime_log'].strftime('%m/%d/%Y %-I:%M %p')}}</td>
                 <td><a href="{{ url_for('book.view_book_details', book_id=book['book_id']) }}">{{book['title']}}, <br>
                         {{book['author']}}</a></td>
-                <td><a href="{{ url_for('auth.user_settings', user_id=book['user_id']) }}">{{book['full_name']}}, <br>
-                        {{book['email']}}</a></td>
+                <td><a href="{{ url_for('auth.user_settings', user_id=book['user_id']) }}">{{book['full_name']}}</a></td>
                 <!-- <td>{{book['contact_number']}}</td> -->
                 <td class="text-center">{{book['borrowed_days']}}</td>
             </tr>
@@ -50,13 +50,15 @@
             {% endfor %}
         </tbody>
     </table>
+    </small>
 </div>
 {% endif %}
 {% if returned_books %}
-<div class="card mx-auto" style="width: 36rem;">
+<div class="card mx-auto">
     <div class="card-header text-center">
         Returned Books
     </div>
+    <small>
     <table class="table table-hover">
         <thead>
             <tr>
@@ -84,18 +86,20 @@
             {% endfor %}
         </tbody>
     </table>
+    </small>
 </div>
 {% endif %}
 {% if users %}
-<div class="card mx-auto" style="width: 36rem;">
+<div class="card mx-auto">
     <div class="card-header text-center">
         User Accounts
     </div>
+    <small>
     <table class="table table-hover">
         <thead>
             <tr>
                 <td>ID</td>
-                <td>Email</td>
+                <!-- <td>Email</td> -->
                 <td>Full Name</td>
                 <!-- <td>Contact Number</td> -->
                 <td>Role</td>
@@ -106,7 +110,7 @@
             {% for user in users %}
             <tr>
                 <td>{{user['id']}}</td>
-                <td>{{user['email']}}</td>
+                <!-- <td>{{user['email']}}</td> -->
                 <td>{{user['full_name']}}</td>
                 <!-- <td>{{user['contact_number']}}</td> -->
                 {% if user['library_staff'] %}
@@ -120,6 +124,7 @@
             {% endfor %}
         </tbody>
     </table>
+    </small>
 </div>
 {% endif %}
 {% endblock %}
