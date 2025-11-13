@@ -64,7 +64,7 @@
             <tr>
                 <td>Date & Time</td>
                 <td>Book Title, Author</td>
-                <td>Borrower, Email</td>
+                <td>Borrower</td>
                 <!-- <td>Contact Number</td> -->
                 <td>Log Link</td>
             </tr>
@@ -76,8 +76,7 @@
                 <td>{{book['datetime_log'].strftime('%m/%d/%Y %-I:%M %p')}}</td>
                 <td><a href="{{ url_for('book.view_book_details', book_id=book['book_id']) }}">{{book['title']}}, <br>
                         {{book['author']}}</a></td>
-                <td><a href="{{ url_for('auth.user_settings', user_id=book['user_id']) }}">{{book['full_name']}}, <br>
-                        {{book['email']}}</a></td>
+                <td><a href="{{ url_for('auth.user_settings', user_id=book['user_id']) }}">{{book['full_name']}}</a></td>
                 <!-- <td>{{book['contact_number']}}</td> -->
                 <td><a class="badge btn btn-primary"
                         href="{{ url_for('book_log.enter_log', book_id=book['book_id']) }}">Enter Log</a></td>
