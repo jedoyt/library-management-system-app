@@ -75,7 +75,11 @@ def new_books():
         raise Forbidden
 
     search_results = list()
-    search_results_header = "Search Results"
+    search_results_header = "New Books"
+
+    new_books = get_db().execute(
+        'SELECT * FROM book WHERE book.id NOT IN (SELECT book_id FROM book_log)'
+    ).fetchall()
 
     if request.method == 'POST':
         title = request.form['book_title']
@@ -90,7 +94,13 @@ def new_books():
         ).fetchall()
         # print([(book['title'], book['author'], book['category']) for book in search_results])
 
-        search_results_header = f"Search Results for Title:'{title}' Author:'{author}' Category:'{category}'"
+        if title:
+            search_results_header += f" | Title: '{title}'"
+        if author:
+            search_results_header += f" | Author: '{author}'"
+        if category:
+            search_results_header += f" | Category: '{category}'"
+        # search_results_header = f"New Books Title:'{title}' Author:'{author}' Category:'{category}'"
 
         return render_template(
             'book/new_books.html', search_results=search_results,
@@ -98,7 +108,7 @@ def new_books():
             )
 
     return render_template(
-        'book/new_books.html', search_results=search_results,
+        'book/new_books.html', search_results=new_books,
         search_results_header=search_results_header, categories=categories
         )
 
@@ -220,7 +230,14 @@ def browse_books():
             ' ORDER BY MAX(book_log.id) DESC', (title, author, category)
         ).fetchall()
         
-        search_results_header = f"Search results for Title: '{title}' Author: '{author}' Category: '{category}'"
+        search_results_header = "Search results"
+        if title:
+            search_results_header += f" | Title: '{title}'"
+        if author:
+            search_results_header += f" | Author: '{author}'"
+        if category:
+            search_results_header += f" | Category: '{category}'"
+        # search_results_header = f"Search results for Title: '{title}' Author: '{author}' Category: '{category}'"
 
         if search_results:
             # Convert SQLite Row objects to dictionaries
