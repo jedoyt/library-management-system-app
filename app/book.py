@@ -57,6 +57,17 @@ def add_book():
 
     return render_template('book/add_book.html', categories=categories)
 
+@bp.route('/delete/<int:book_id>', methods=('GET', 'POST'))
+@login_required
+def delete_book(book_id):
+    if not g.user['library_staff']:
+        raise Unauthorized
+    get_book_details(book_id=book_id)
+    db = get_db()
+    db.execute('DELETE FROM book WHERE id = ?', (book_id,))
+    db.commit()
+    return redirect(url_for('book.browse_books'))
+
 @bp.route('/new_books', methods=('GET', 'POST'))
 @login_required
 def new_books():
@@ -223,36 +234,26 @@ def browse_books():
             # Store the search results in the session
             session['results'] = results
             session['results_header'] = search_results_header
-            return redirect(url_for('book.browse_books'))
+            return redirect(url_for('book.search_results'))
         else:
             # No results found
-            return render_template('book/books.html', search_results_header="No results found!", categories=categories)
+            return render_template('book/search_results.html', search_results_header="No results found!", categories=categories)
     else:
-        # Retrieve the search results from the session, if any
-        results = session.get('results')
-        search_results_header = session.get('results_header')
-        if results:
-            # Paginate the search results
-            page = request.args.get('page', 1, type=int)
-            per_page = 5
-            paginated_results = paginate_results(results, page, per_page)
-            total_pages = len(results) // per_page + (len(results) % per_page > 0)
+        return render_template('book/books.html', categories=categories)
 
-            return render_template(
-                'book/books.html', search_results_header=search_results_header, search_results=paginated_results, 
-                total_pages=total_pages, current_page=page, badge=badge, categories=categories,
-            )
-        else:
-            # Render the initial search page
-            return render_template('book/books.html', categories=categories)
-
-@bp.route('/delete/<int:book_id>', methods=('GET', 'POST'))
+@bp.route('/search_results', methods=('GET', 'POST'))
 @login_required
-def delete_book(book_id):
-    if not g.user['library_staff']:
-        raise Unauthorized
-    get_book_details(book_id=book_id)
-    db = get_db()
-    db.execute('DELETE FROM book WHERE id = ?', (book_id,))
-    db.commit()
-    return redirect(url_for('book.browse_books'))
+def search_results():
+    results = session.get('results')
+    search_results_header = session.get('results_header')
+    if results:
+        # Paginate the search results
+        page = request.args.get('page', 1, type=int)
+        per_page = 5
+        paginated_results = paginate_results(results, page, per_page)
+        total_pages = len(results) // per_page + (len(results) % per_page > 0)
+
+        return render_template(
+            'book/search_results.html', search_results_header=search_results_header, search_results=paginated_results, 
+            total_pages=total_pages, current_page=page, badge=badge, categories=categories,
+        )
