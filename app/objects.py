@@ -1,3 +1,15 @@
+# Navbar label
+nav_label = "Pilgrim Library"
+
+# Default password on reset
+default_reset_password = 'pilgrimchurchlibrary'
+
+# Librarians
+librarian = {
+        'Gerard Pelaez': "https://www.facebook.com/gerpelz",
+        'Jed Uñalivia': "https://www.facebook.com/jed.unalivia/",
+}
+
 # Book Status
 book_status_list = ["Available", "Borrowed", "Returned", "Damaged", "Lost", "Unavailable"]
 

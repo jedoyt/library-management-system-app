@@ -6,7 +6,7 @@ from werkzeug.exceptions import Unauthorized, BadRequest, Forbidden
 
 from app.auth import login_required
 from app.db import get_db
-from app.objects import badge, book_status_list
+from app.objects import badge, book_status_list, nav_label, librarian
 
 
 bp = Blueprint('book_log', __name__)
@@ -27,8 +27,8 @@ def index():
     total_pages = len(book_logs) // per_page + (len(book_logs) % per_page > 0)
 
     return render_template(
-        'book_log/index.html', book_logs=paginated_results, 
-        total_pages=total_pages, current_page=page, badge=badge
+        'book_log/index.html', book_logs=paginated_results, nav_label=nav_label,
+        total_pages=total_pages, current_page=page, badge=badge, librarian=librarian
         )
 
 # Helper for pagination

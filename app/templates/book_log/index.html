@@ -50,7 +50,12 @@
                 <p class="card-text">
                     <small>
                         Before borrowing any book and tapping the "Borrow" button on the app, kindly approach first any of our 
-                        church librarians (<strong><a target="_blank" href="https://www.facebook.com/gerpelz">Gerard Pelaez</a></strong>, <strong><a target="_black" href="https://www.facebook.com/jed.unalivia/">Jed Uñalivia</a></strong>) to be personally notified. 
+                        church librarians 
+                            {% for key in librarian.keys() %}
+                            <strong><a target="_blank" href="{{ librarian[key] }}">{{ key }}</a></strong>,
+                            <!-- <strong><a target="_black" href="{{ librarian['Jed Uñalivia'] }}">{{ librarian.keys() }}</a></strong> -->
+                            {% endfor %}
+                            to be personally notified. 
                         Preferrably during Lord's Day.
                     </small>
                 </p>

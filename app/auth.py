@@ -1,5 +1,5 @@
 import functools
-from app.objects import badge
+from app.objects import badge, default_reset_password
 from werkzeug.exceptions import Unauthorized
 
 
@@ -304,7 +304,7 @@ def reset_password(user_id):
     # This page is only for library staff accounts
     if not g.user['library_staff']:
         raise Unauthorized
-    password = 'pilgrimchurchlibrary'
+    password = default_reset_password
 
     db = get_db()
     db.execute(
