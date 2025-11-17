@@ -1,30 +1,15 @@
-import sqlite3, csv
+import sqlite3
+import csv
 from datetime import datetime
 from pprint import pprint
 from app.book_log import convert_current_utc_dt
 
-c = sqlite3.connect(
-            'instance/app_db.sqlite',
-            # detect_types=sqlite3.PARSE_DECLTYPES
-        )
-c.row_factory = sqlite3.Row
 
-# BULK INSERT ON book TABLE
-# with open('library_catalogue.csv', newline='') as csvfile:
-#     reader = csv.DictReader(csvfile)
-#     for row in reader:
-#         print(row)
-
-#         inserted_items = c.execute(
-#             "INSERT INTO book (title, author, category, ean_isbn13,"
-#             " upc_isbn10, book_desc, publisher, date_published, date_added, pages)"
-#             " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-#             (row['title'], row['author'], row['category'], row['ean_isbn13'], 
-#              row['upc_isbn10'], row['description'], row['publisher'], row['publish_date'], row['added'], row['length'])
-#         ).fetchall()
-
-#         print(inserted_items)
-#         # print(f"No. of rows inserted: {len(inserted_items)}")
+# c = sqlite3.connect(
+#             'instance/app_db.sqlite',
+#             # detect_types=sqlite3.PARSE_DECLTYPES
+#         )
+# c.row_factory = sqlite3.Row
 
 # # BULK INSERT ON book_log TABLE (INITIAL LOGS)
 # for i in range(1,513):
@@ -78,18 +63,77 @@ c.row_factory = sqlite3.Row
 # '''
 
 # Set first registered user libarry_staff to True
-query = '''
-UPDATE user SET library_staff = 1 WHERE id = 1;
-'''
+# query = '''
+# UPDATE user SET library_staff = 1 WHERE id = 1;
+# '''
 
-fetched_items = c.execute(
-    "SELECT * from user;"
-    )
-all_items = fetched_items.fetchall()
-# print(all_items)
-for item in all_items:
-    pprint([i for i in item])
+# fetched_items = c.execute(
+#     "SELECT * from user;"
+#     )
+# all_items = fetched_items.fetchall()
+# # print(all_items)
+# for item in all_items:
+#     pprint([i for i in item])
 
-c.commit()
+# c.commit()
+# c.close()
 
-c.close()
+
+# Bulk insertion of books from initial catalogue in csv file
+def bulk_insert_books(db_path='instance/app_db.sqlite', csv_path='library_catalogue.csv'):
+    c = sqlite3.connect(
+            db_path,
+            # detect_types=sqlite3.PARSE_DECLTYPES
+        )
+    c.row_factory = sqlite3.Row
+    with open(csv_path, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            # print(row)
+            inserted_items = c.execute(
+                "INSERT INTO book (title, author, category, ean_isbn13,"
+                " upc_isbn10, book_desc, publisher, date_published, date_added, pages)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                (row['title'], row['author'], row['category'], row['ean_isbn13'], 
+                row['upc_isbn10'], row['description'], row['publisher'], row['publish_date'], row['added'], row['length'])
+            ).fetchall()
+
+            # print(inserted_items)
+            # print(f"No. of rows inserted: {len(inserted_items)}")
+    c.commit()
+    c.close()
+
+
+# DATABASE INITIALIZATION FUNCTION
+def init_database():
+    """
+    Initialize the database by creating tables from schema.sql
+    This function creates a fresh database with all necessary tables.
+    """
+    db_path = 'instance/app_db.sqlite'
+    
+    # Connect to database
+    conn = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)
+    conn.row_factory = sqlite3.Row
+    
+    try:
+        # Read and execute schema.sql
+        with open('app/schema.sql', 'r') as schema_file:
+            schema_script = schema_file.read()
+            conn.executescript(schema_script)
+        
+        conn.commit()
+        print(f"✓ Database initialized successfully at {db_path}")
+        print("✓ Tables created: user, book, book_log")
+        
+    except FileNotFoundError:
+        print("✗ Error: schema.sql file not found at app/schema.sql")
+    except Exception as e:
+        print(f"✗ Error initializing database: {e}")
+    finally:
+        conn.close()
+
+
+if __name__ == "__main__":
+    init_database()
+    # bulk_insert_books()

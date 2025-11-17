@@ -16,4 +16,3 @@ build/
 test.py
 csv_explorer.py
 project_notes.txt
-db_actions.py
